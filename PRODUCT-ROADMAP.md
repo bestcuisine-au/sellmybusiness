@@ -1,297 +1,320 @@
-# HospitalityForSale — Product Roadmap
+# SellMyBusiness.com.au — Product Roadmap
 
-**Vision:** The slickest AI-powered FSBO platform for hospitality business sales in Australia.
+**Vision:** Australia's first AI-powered FSBO (For Sale By Owner) platform for business sales.
 
-**Tagline:** *"Sell your hospitality business yourself. Broker-quality tools, zero commission."*
+**Tagline:** *"Sell your business yourself. AI-powered tools, zero commission."*
 
 ---
 
-## 🎯 Target User
+## 🎯 Strategic Overview
 
-**Primary:** Hospitality business owners wanting to sell without a broker
-- Café owners
-- Restaurant owners
-- Bar/pub owners
-- Food truck operators
-- Catering businesses
+### The Pivot
 
-**Why FSBO?**
-- Save 5-10% broker commission ($25K-$100K on typical sale)
+We started with HospitalityForSale.com.au as a vertical directory. Through strategic review, we've pivoted to a bigger play:
+
+**Primary Focus: SellMyBusiness.com.au**
+- AI-powered FSBO platform
+- Works for ALL industries (not just hospitality)
+- No partnerships required
+- Direct revenue from day one
+- First mover advantage in AI-driven business sales
+
+**Future Expansion: Industry Directories**
+- HospitalityForSale.com.au
+- RetailForSale.com.au
+- TradesForSale.com.au
+- (+ 10 more verticals)
+- Feed traffic to SellMyBusiness
+- Potential Arosoftware partnership (later)
+
+### Why FSBO First
+
+1. **No dependencies** — We control our destiny
+2. **Direct revenue** — Owners pay us, not brokers
+3. **AI differentiation** — No one else has this
+4. **Scalable** — Same platform serves all industries
+5. **Disruptive** — Save owners 5-10% broker commission
+
+---
+
+## 🏢 Brand Architecture
+
+### Primary Brand (NOW)
+```
+SellMyBusiness.com.au
+├── AI Price Guide
+├── AI Description Generator
+├── AI Info Memo Generator
+├── Built-in CRM
+├── NDA Management
+└── 3-Tier Pricing ($199 / $499 / $899)
+```
+
+### Future Directory Network (LATER)
+```
+HospitalityForSale.com.au ──┐
+RetailForSale.com.au ───────┤
+TradesForSale.com.au ───────┼──► SellMyBusiness.com.au
+HealthcareForSale.com.au ───┤    (FSBO conversions)
+BeautyForSale.com.au ───────┤
+FitnessForSale.com.au ──────┘
++ more verticals
+```
+
+### Domain Portfolio (To Acquire)
+
+**Priority 1 — Core Brand:**
+- [ ] sellmybusiness.com.au ⭐
+- [ ] sellmybusiness.au
+
+**Priority 2 — Industry Verticals:**
+- [ ] retailforsale.com.au
+- [ ] tradesforsale.com.au
+- [ ] restaurantforsale.com.au
+- [ ] healthcareforsale.com.au
+- [ ] beautyforsale.com.au
+- [ ] fitnessforsale.com.au
+- [ ] automotiveforsale.com.au
+- [ ] barforsale.com.au
+- [ ] pubforsale.com.au
+
+**Priority 3 — Defensive:**
+- [ ] businessfsbo.com.au
+
+**Already Owned:**
+- [x] hospitalityforsale.com.au
+
+**Estimated Cost:** ~$150-200 for full portfolio
+
+---
+
+## 👤 Target User
+
+**Primary:** Business owners wanting to sell without a broker
+
+**Why they choose FSBO:**
+- Save $25K-$100K in broker commission (5-10% of sale)
 - Stay in control of the process
 - Know their business better than any broker
+- Don't want strangers poking around until serious buyer
 
-**Their Pain Points:**
-- Don't know how to value their business
-- Can't write a professional sales document
-- Waste time on tyre-kickers
-- Don't know the sales process
-- Feel unprofessional compared to broker listings
-
----
-
-## 🚀 MVP (Now → 4 weeks)
-
-**Goal:** Working FSBO platform with basic AI features
-
-### Core Features
-
-**1. Simple Listing Creation**
-- [ ] 5-minute listing flow
-- [ ] Guided form (business type, location, financials, lease details)
-- [ ] Photo upload (hero + gallery)
-- [ ] Auto-generate professional description from inputs
-- [ ] Preview before publish
-- [ ] Edit anytime
-
-**2. Professional Listing Display**
-- [ ] Blind listing view (identity hidden until NDA)
-- [ ] Beautiful, mobile-responsive pages
-- [ ] Key metrics displayed clearly (asking price, revenue, rent, lease term)
-- [ ] Photo gallery
-- [ ] "Request Info" CTA
-
-**3. Built-in NDA Flow**
-- [ ] Buyer must agree to NDA before seeing details
-- [ ] Morgan-quality legal terms (already integrated)
-- [ ] NDA tracked per buyer
-- [ ] Owner notified of each NDA signature
-
-**4. Enquiry Management (Basic CRM)**
-- [ ] Owner dashboard
-- [ ] List of all enquiries
-- [ ] Buyer details (name, email, phone)
-- [ ] NDA status (pending/signed)
-- [ ] Quick actions (email buyer, mark as contacted)
-- [ ] Notes per buyer
-
-**5. Email Notifications**
-- [ ] New enquiry alert to owner
-- [ ] NDA signed alert
-- [ ] Weekly summary of activity
-
-### AI Features (MVP)
-
-**6. AI Business Description Generator**
-- [ ] Owner inputs: type, location, years trading, unique selling points
-- [ ] AI generates professional 200-word description
-- [ ] Owner can edit/regenerate
-- [ ] Multiple tone options (professional, warm, exciting)
-
-**7. Basic AI Valuation Indicator**
-- [ ] Input: annual revenue, profit, lease term, location
-- [ ] Output: estimated range (e.g., "$350K - $450K")
-- [ ] Based on industry multiples + comparable sales
-- [ ] Disclaimer: "Indicative only, not a formal valuation"
-
-### Pricing (MVP)
-
-| Tier | Price | Features |
-|------|-------|----------|
-| **Basic** | $299 | 3-month listing, NDA, basic CRM, 10 photos |
-| **Standard** | $499 | 6-month listing, AI description, valuation indicator, 20 photos |
-| **Premium** | $799 | List until sold, all AI features, priority support, featured placement |
+**Their pain points (we solve):**
+- ❌ Don't know what their business is worth → **AI Price Guide**
+- ❌ Can't write professional sales copy → **AI Description Generator**
+- ❌ Waste time on tyre-kickers → **AI Buyer Screening**
+- ❌ Don't have sales documents → **AI Info Memo Generator**
+- ❌ Feel unprofessional vs broker listings → **Beautiful listing templates**
+- ❌ Can't track buyer conversations → **Built-in CRM**
 
 ---
 
-## 🔧 V2 (Months 2-3)
+## 💰 Pricing Strategy
 
-**Goal:** Full CRM + advanced AI = owner feels like they have a broker
+### Three Tiers
 
-### Enhanced CRM
+| Tier | Price | Duration | For Who |
+|------|-------|----------|---------|
+| **Starter** | $199 | 3 months | Quick sale, simple business |
+| **Professional** | $499 | 6 months | Serious sellers wanting the edge |
+| **Premium** | $899 | Until SOLD | Maximizing sale price |
 
-**8. Pipeline Management**
-- [ ] Kanban board view
-- [ ] Stages: New → NDA Signed → Viewing Scheduled → Offer Received → Due Diligence → Sold
-- [ ] Drag-and-drop between stages
-- [ ] Stage timestamps
+### Feature Matrix
 
-**9. Communication Hub**
-- [ ] Email templates (intro, follow-up, viewing confirmation, offer response)
-- [ ] Send emails from platform
-- [ ] Email history per buyer
-- [ ] SMS notifications (optional)
+| Feature | Starter | Professional | Premium |
+|---------|:-------:|:------------:|:-------:|
+| Listing duration | 3 mo | 6 mo | Until sold |
+| Photos | 10 | 25 | Unlimited |
+| Built-in NDA | ✅ | ✅ | ✅ |
+| Enquiry inbox | ✅ | ✅ | ✅ |
+| Email notifications | ✅ | ✅ | ✅ |
+| AI Business Description | ❌ | ✅ | ✅ |
+| AI Price Guide | ❌ | ✅ | ✅ |
+| CRM Pipeline | ❌ | ✅ | ✅ |
+| Email templates | ❌ | ✅ | ✅ |
+| Buyer qualification | ❌ | ✅ | ✅ |
+| AI Info Memo Generator | ❌ | ❌ | ✅ |
+| AI Negotiation Assistant | ❌ | ❌ | ✅ |
+| AI Buyer Screening Chat | ❌ | ❌ | ✅ |
+| Document vault | ❌ | ❌ | ✅ |
+| Featured placement | ❌ | ❌ | ✅ |
+| Priority support | ❌ | ❌ | ✅ |
 
-**10. Follow-up Reminders**
-- [ ] Auto-remind if no contact in X days
-- [ ] Task list for owner
-- [ ] Calendar integration (Google/Outlook)
+### Revenue Projections
 
-**11. Document Management**
-- [ ] Upload financials (password protected)
-- [ ] Lease summary
-- [ ] Equipment list
-- [ ] Only visible to NDA-signed buyers
+**Conservative (Month 6):**
+- 30 Starter × $199 = $6K
+- 50 Professional × $499 = $25K
+- 20 Premium × $899 = $18K
+- **Total: $49K/month**
 
-### Advanced AI Features
-
-**12. AI Information Memorandum Generator**
-- [ ] Comprehensive 10-15 page sales document
-- [ ] Sections: Executive Summary, Business Overview, Financials, Operations, Growth Opportunities, Assets, Lease Details
-- [ ] Professional formatting (PDF export)
-- [ ] Owner reviews and approves
-
-**13. AI Buyer Qualification Chatbot**
-- [ ] Embedded on listing page
-- [ ] Asks qualifying questions before owner contact:
-  - "Do you have experience in hospitality?"
-  - "What's your budget range?"
-  - "Are you pre-approved for finance?"
-  - "When are you looking to buy?"
-- [ ] Scores buyer quality (Hot/Warm/Cold)
-- [ ] Filters out tyre-kickers
-
-**14. AI Comparable Sales**
-- [ ] "Similar businesses sold recently:"
-- [ ] Show anonymized comparables
-- [ ] Helps justify asking price
-
-**15. AI Negotiation Assistant**
-- [ ] Owner inputs: offer received, terms
-- [ ] AI suggests: accept/counter/reject
-- [ ] Provides counter-offer language
-- [ ] Explains reasoning
+**Target (Month 12):**
+- 50 Starter × $199 = $10K
+- 100 Professional × $499 = $50K
+- 50 Premium × $899 = $45K
+- **Total: $105K/month**
 
 ---
 
-## 🚀 V3 (Months 4-6)
+## 🚀 Development Phases
 
-**Goal:** Market leader, network effects, data moat
+### Phase 1: MVP (Weeks 1-4) ⬅️ WE ARE HERE
 
-### Buyer Features
+**Goal:** Working FSBO platform with basic AI
 
-**16. Buyer Accounts**
-- [ ] Buyers can create profiles
-- [ ] Save favorite listings
-- [ ] Get alerts for new listings matching criteria
-- [ ] Track their enquiries
+**Features:**
+- [x] Listing creation flow
+- [x] NDA integration (Morgan template)
+- [x] Basic enquiry management
+- [ ] Rebrand to SellMyBusiness
+- [ ] Stripe payment integration
+- [ ] AI Business Description Generator
+- [ ] AI Price Guide (benchmarks, not "valuation")
+- [ ] 3-tier pricing live
 
-**17. Buyer Verification**
-- [ ] Verified funds badge
-- [ ] Pre-approved finance badge
-- [ ] Previous business owner badge
-- [ ] Builds trust for sellers
+**Success Metric:** First paying customer
 
-### Platform Growth
+---
 
-**18. Syndication (Outbound)**
-- [ ] Auto-post to SEEK Business, Bsale (if we partner)
-- [ ] Or manual export for owner to post elsewhere
+### Phase 2: Full CRM + Advanced AI (Weeks 5-12)
 
-**19. Syndication (Inbound)**
-- [ ] Accept broker listings (separate section)
-- [ ] Become Arosoftware destination
-- [ ] "Broker Listings" vs "Owner Direct" filters
+**Goal:** Owner feels like they have a broker
 
-**20. Success Stories**
+**CRM Features:**
+- [ ] Pipeline view (Kanban board)
+- [ ] Stages: New → NDA → Viewing → Offer → Due Diligence → Sold
+- [ ] Email templates
+- [ ] Follow-up reminders
+- [ ] Activity timeline per buyer
+- [ ] Document vault (financials, lease)
+
+**AI Features:**
+- [ ] AI Info Memo Generator (10-15 page PDF)
+- [ ] AI Buyer Qualification Chatbot
+- [ ] AI Comparable Sales ("similar businesses sold for...")
+- [ ] AI Negotiation Assistant
+
+**Success Metric:** 50 paying customers, NPS > 50
+
+---
+
+### Phase 3: Growth & Network Effects (Months 4-6)
+
+**Goal:** Market leadership, network effects
+
+**Buyer Features:**
+- [ ] Buyer accounts & saved searches
+- [ ] Buyer verification badges
+- [ ] Alerts for matching listings
+
+**Platform Growth:**
+- [ ] Success stories / testimonials
 - [ ] Sold listings showcase
-- [ ] Testimonials
-- [ ] "Sold in X days" badges
+- [ ] Blog / SEO content
+- [ ] Referral program
 
-### AI Superchargers
+**AI Superchargers:**
+- [ ] AI Due Diligence Checklist
+- [ ] AI Marketing Copy Generator
+- [ ] AI Price Optimization ("consider adjusting to $X")
+- [ ] AI Settlement Assistant
 
-**21. AI Due Diligence Checklist**
-- [ ] Auto-generated checklist based on business type
-- [ ] Tracks completion
-- [ ] Suggests documents needed
-
-**22. AI Marketing Copy**
-- [ ] Social media posts
-- [ ] Email campaign to potential buyers
-- [ ] Google Ads copy
-
-**23. AI Price Optimization**
-- [ ] "Your listing has been viewed 500 times with 3 enquiries"
-- [ ] "Consider adjusting price to $X for faster sale"
-- [ ] Market feedback loop
-
-**24. AI Settlement Assistant**
-- [ ] Checklist: contract, deposit, finance approval, lease transfer, licenses, settlement date
-- [ ] Timeline view
-- [ ] Reminders for both parties
+**Success Metric:** 200 listings/month, $100K MRR
 
 ---
 
-## 💰 Revenue Model
+### Phase 4: Directory Network (Month 6+)
 
-### Phase 1: Listing Fees
-- $299 - $799 per listing
-- Target: 100 listings/month = $50K MRR
+**Goal:** Traffic flywheel via industry verticals
 
-### Phase 2: Premium Features
-- Featured placement: +$199
-- AI Info Memo: +$149
-- Buyer lead alerts: $49/month subscription
+**Launch Directories:**
+- [ ] RetailForSale.com.au
+- [ ] TradesForSale.com.au
+- [ ] Additional verticals based on demand
 
-### Phase 3: Transaction Success Fee (Optional)
-- 1% success fee on completed sales
-- Only if seller opts in for "full service" tier
-- Still 80% cheaper than broker
+**Potential Partnerships:**
+- [ ] Arosoftware (broker feed integration)
+- [ ] Industry associations
+- [ ] Accountants / lawyers referrals
 
-### Phase 4: Data & Insights
-- Market reports for buyers
-- Valuation API for accountants/lawyers
-- Anonymized transaction data
+**Strategy:**
+- Directories = SEO traffic magnets
+- Subtle promotion of SellMyBusiness FSBO
+- "Selling your business? Skip the broker →"
+
+---
+
+## ⚠️ Legal & Compliance Notes
+
+### Regulated Terms
+- ❌ Don't use: "Valuation", "Business Valuation", "Valuation Report"
+- ✅ Use instead: "Price Guide", "Market Estimate", "Industry Benchmarks", "Pricing Indicator"
+
+### Required Disclaimers
+> "This is an indicative price guide based on industry data and comparable sales. It is not a formal valuation. For a certified valuation, consult a licensed business valuer."
+
+### NDA
+- Using professional NDA template (Morgan Business Sales standard)
+- 12-month confidentiality term
+- Australian law jurisdiction
+- Includes staff contact prohibition
 
 ---
 
 ## 🏗️ Technical Stack
 
-**Current (MVP):**
+**Current:**
 - Next.js 14 (App Router)
 - PostgreSQL + Prisma
 - Tailwind CSS
-- Nodemailer (email)
-- PM2 on VPS
+- PM2 on VPS (72.62.253.204)
 
 **To Add:**
 - OpenAI API (GPT-4 for AI features)
 - Stripe (payments)
-- Cloudinary or S3 (image storage)
-- SendGrid or Resend (transactional email)
-- Twilio (SMS, optional)
-- Google Analytics + Mixpanel
+- Cloudinary or S3 (images)
+- Resend (transactional email)
+
+**Infrastructure:**
+- Domain: sellmybusiness.com.au (to acquire)
+- SSL: Cloudflare
+- Hosting: Current VPS (scale later)
 
 ---
 
-## 📅 Timeline
+## 📊 Success Metrics
 
-| Phase | Timeframe | Focus |
-|-------|-----------|-------|
-| **MVP** | Now → Week 4 | Core FSBO + basic AI |
-| **V2** | Weeks 5-12 | Full CRM + advanced AI |
-| **V3** | Months 4-6 | Buyer features + syndication |
-| **Scale** | Month 6+ | Marketing push, partnerships |
-
----
-
-## 🎯 Success Metrics
-
-**MVP:**
-- 10 paid listings in month 1
-- 50 buyer enquiries
-- 1 successful sale
-
-**V2:**
-- 50 paid listings/month
-- NPS > 50 from sellers
-- 5 successful sales
-
-**V3:**
-- 200 listings/month
-- $100K MRR
-- 20+ sales/month
-- Recognized as #1 hospitality FSBO in Australia
+| Phase | Timeframe | Key Metric |
+|-------|-----------|------------|
+| MVP | Week 4 | 1 paying customer |
+| Phase 2 | Week 12 | 50 customers, NPS > 50 |
+| Phase 3 | Month 6 | 200 listings/mo, $100K MRR |
+| Phase 4 | Month 12 | #1 FSBO platform in AU |
 
 ---
 
 ## 🔥 Competitive Advantage
 
-1. **Hospitality-specific** — No one else focuses here
-2. **AI-first** — First mover in AI-driven business sales
-3. **FSBO-friendly** — Tools that make owners look professional
-4. **Fair pricing** — Flat fee, no commission
-5. **Data moat** — Every listing = training data for better valuations
+1. **AI-First** — First mover in AI-driven business sales
+2. **FSBO Focus** — Tools that make owners look professional
+3. **All Industries** — One platform, every business type
+4. **Fair Pricing** — Flat fee, zero commission
+5. **Data Moat** — Every listing trains better AI
 
 ---
 
-*Draft v1.0 — February 7, 2026*
+## 👥 Team
+
+**Chairman:** Steve Blaby
+- Strategic oversight
+- Sanity checks
+- Industry expertise
+
+**CEO:** Neo (AI)
+- Execution
+- Product development
+- Day-to-day operations
+
+---
+
+*Version 2.0 — February 7, 2026*
+*Updated to reflect SellMyBusiness pivot*
