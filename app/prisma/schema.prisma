@@ -99,6 +99,7 @@ model Business {
   inquiriesList Inquiry[]
   infoMemo      InfoMemo?
   prospects     Prospect[]
+  memoData      InfoMemoData?
   
   @@index([status, industry])
   @@index([location, state])
@@ -168,6 +169,7 @@ model InfoMemo {
   business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
   accessCodes MemoAccess[]
   documents   MemoDocument[]
+  sections    InfoMemoSection[]
 }
 
 model MemoAccess {
@@ -337,4 +339,136 @@ model Lead {
   
   @@index([email])
   @@index([source, createdAt])
+}
+
+// Rich data for Info Memo generation
+model InfoMemoData {
+  id          String   @id @default(cuid())
+  businessId  String   @unique
+  
+  // === BUSINESS BASICS ===
+  businessName      String
+  tradingName       String?
+  abn               String?
+  entityType        String?    // Pty Ltd, Sole Trader, Partnership, Trust
+  established       Int?       // Year
+  industryCategory  String
+  industrySubcategory String?
+  
+  // === LOCATION & PREMISES ===
+  streetAddress     String?
+  suburb            String
+  state             String
+  postcode          String
+  locationType      String?    // Strip retail, Shopping centre, Industrial, Home-based
+  premisesSqm       Int?
+  leaseExpiry       DateTime?
+  leaseRemainingYrs Int?
+  rentPerAnnum      Decimal?
+  rentReviewType    String?    // CPI, Fixed %, Market
+  outgoingsIncluded Boolean?
+  
+  // === FINANCIAL PERFORMANCE ===
+  // Current Year
+  revenueCurrent    Decimal?
+  costOfGoodsCurrent Decimal?
+  grossProfitCurrent Decimal?
+  wagesCurrent      Decimal?
+  rentCurrent       Decimal?
+  otherExpensesCurrent Decimal?
+  ebitdaCurrent     Decimal?
+  
+  // Prior Year
+  revenuePrior      Decimal?
+  ebitdaPrior       Decimal?
+  
+  // Two Years Prior
+  revenueTwoPrior   Decimal?
+  ebitdaTwoPrior    Decimal?
+  
+  // Owner benefit
+  ownerSalary       Decimal?
+  ownerPerks        Decimal?   // Car, phone, travel, etc
+  addBacks          String?    // Description of add-backs
+  adjustedEarnings  Decimal?   // SDE / Adjusted EBITDA
+  
+  // Revenue breakdown
+  revenueStreams    Json?      // [{name, amount, pct}]
+  seasonalityNotes  String?
+  topCustomerPct    Int?       // % revenue from top customer
+  customerConcentration String? // Description
+  
+  // === OPERATIONS ===
+  operatingHours    String?
+  daysPerWeek       Int?
+  peakTimes         String?
+  
+  // Staff
+  ftEmployees       Int?
+  ptEmployees       Int?
+  casualEmployees   Int?
+  keyRoles          String?    // Description of key positions
+  ownerHoursPerWeek Int?
+  managerInPlace    Boolean?
+  
+  // Systems & processes
+  posSystem         String?
+  accountingSoftware String?
+  otherSystems      String?
+  documentedProcesses Boolean?
+  
+  // Suppliers
+  keySuppliers      String?
+  supplierTerms     String?
+  exclusiveAgreements Boolean?
+  
+  // === ASSETS ===
+  ffeMktValue       Decimal?   // Furniture, fixtures, equipment
+  ffeAge            String?
+  stockAtValue      Decimal?
+  stockIncluded     Boolean?
+  vehiclesIncluded  String?
+  ipIncluded        String?    // Trademarks, patents, domain, recipes
+  licensesRequired  String?    // Liquor, food, trade licenses
+  
+  // === SALE DETAILS ===
+  askingPrice       Decimal?
+  priceInclStock    Boolean?
+  priceInclTraining Boolean?
+  trainingPeriod    String?    // e.g. "4 weeks"
+  reasonForSale     String
+  idealBuyer        String?
+  
+  // === GROWTH & OPPORTUNITY ===
+  competitiveAdvantages String?
+  growthOpportunities   String?
+  recentImprovements    String?
+  challengesToNote      String?
+  
+  // === META ===
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+}
+
+// Section-by-section memo content
+model InfoMemoSection {
+  id          String   @id @default(cuid())
+  memoId      String
+  
+  sectionKey  String   // executive_summary, business_overview, financials, etc.
+  sectionTitle String
+  sortOrder   Int
+  
+  content     String   @db.Text
+  isLocked    Boolean  @default(false)  // User has approved this section
+  
+  generatedAt DateTime @default(now())
+  editedAt    DateTime?
+  
+  memo        InfoMemo @relation(fields: [memoId], references: [id], onDelete: Cascade)
+  
+  @@unique([memoId, sectionKey])
+  @@index([memoId, sortOrder])
 }
