@@ -98,6 +98,7 @@ model Business {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   inquiriesList Inquiry[]
   infoMemo      InfoMemo?
+  prospects     Prospect[]
   
   @@index([status, industry])
   @@index([location, state])
@@ -187,6 +188,8 @@ model MemoAccess {
   
   memo        InfoMemo @relation(fields: [memoId], references: [id], onDelete: Cascade)
   viewLogs    MemoViewLog[]
+  prospect    Prospect?   @relation(fields: [prospectId], references: [id])
+  prospectId  String?     @unique
   
   @@index([accessCode])
   @@index([memoId, isRevoked])
@@ -231,4 +234,52 @@ enum DocumentCategory {
 enum AccessTier {
   TIER_1          // Basic info memo
   TIER_2          // Full confidential access
+}
+
+// Prospect CRM
+model Prospect {
+  id          String   @id @default(cuid())
+  businessId  String
+  
+  name        String
+  email       String
+  phone       String?
+  company     String?
+  message     String?
+  
+  source      String   @default("direct")  // direct, seek, bizbuy, etc.
+  sourceRef   String?  // External reference ID
+  
+  ndaStatus   NdaStatus @default(PENDING)
+  ndaSentAt   DateTime?
+  ndaSignedAt DateTime?
+  
+  status      ProspectStatus @default(NEW)
+  notes       String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  memoAccess  MemoAccess?
+  
+  @@index([businessId, status])
+  @@index([email])
+}
+
+enum NdaStatus {
+  PENDING     // NDA not yet sent
+  SENT        // NDA sent, awaiting signature
+  SIGNED      // NDA signed
+  DECLINED    // Prospect declined NDA
+}
+
+enum ProspectStatus {
+  NEW         // Just came in
+  CONTACTED   // Seller reached out
+  NDA_SIGNED  // Ready for info
+  QUALIFIED   // Serious buyer
+  NEGOTIATING // In discussions
+  CLOSED_WON  // Deal done!
+  CLOSED_LOST // Didn't work out
 }
