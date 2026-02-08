@@ -191,7 +191,7 @@ export default function Home() {
           <div className="bg-green-500/10 border border-green-500/30 rounded-2xl p-8">
             <h3 className="text-xl font-semibold text-green-400 mb-4">OwnerExit.ai</h3>
             <ul className="space-y-3 text-slate-300">
-              <li className="flex items-start gap-2"><span className="text-green-400">✓</span> Flat fee from $199 (save $24,801+)</li>
+              <li className="flex items-start gap-2"><span className="text-green-400">✓</span> Flat fee from $499 (save $24,801+)</li>
               <li className="flex items-start gap-2"><span className="text-green-400">✓</span> No lock-in, cancel anytime</li>
               <li className="flex items-start gap-2"><span className="text-green-400">✓</span> Full control over your sale</li>
               <li className="flex items-start gap-2"><span className="text-green-400">✓</span> AI tools work just for you</li>
@@ -208,7 +208,7 @@ export default function Home() {
         <div className="grid md:grid-cols-3 gap-8">
           <div className="bg-slate-800/30 rounded-2xl p-8 border border-slate-700">
             <h3 className="text-lg font-semibold text-slate-400 mb-2">Starter</h3>
-            <div className="text-4xl font-bold text-white mb-4">$199</div>
+            <div className="text-4xl font-bold text-white mb-4">$499</div>
             <ul className="space-y-3 text-slate-300 mb-8">
               <li>✓ AI Price Guide</li>
               <li>✓ Basic listing page</li>
@@ -228,7 +228,7 @@ export default function Home() {
               Most Popular
             </div>
             <h3 className="text-lg font-semibold text-purple-400 mb-2">Growth</h3>
-            <div className="text-4xl font-bold text-white mb-4">$499</div>
+            <div className="text-4xl font-bold text-white mb-4">$999</div>
             <ul className="space-y-3 text-slate-300 mb-8">
               <li>✓ Everything in Starter</li>
               <li>✓ Featured placement</li>
@@ -245,7 +245,7 @@ export default function Home() {
           </div>
           <div className="bg-slate-800/30 rounded-2xl p-8 border border-slate-700">
             <h3 className="text-lg font-semibold text-slate-400 mb-2">Premium</h3>
-            <div className="text-4xl font-bold text-white mb-4">$899</div>
+            <div className="text-4xl font-bold text-white mb-4">$1,499</div>
             <ul className="space-y-3 text-slate-300 mb-8">
               <li>✓ Everything in Growth</li>
               <li>✓ Info Memo Generator</li>
