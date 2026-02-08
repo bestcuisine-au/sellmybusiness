@@ -97,6 +97,9 @@ function DashboardContent() {
                 <Link href={`/listing/${biz.id}`} className="text-cyan-400 hover:text-cyan-300 text-sm">
                   View Listing
                 </Link>
+                <Link href={`/dashboard/${biz.id}/im-builder`} className="text-purple-400 hover:text-purple-300 text-sm">
+                  Build IM
+                </Link>
                 <Link href={`/dashboard/${biz.id}/memo`} className="text-cyan-400 hover:text-cyan-300 text-sm">
                   Deal Room
                 </Link>
