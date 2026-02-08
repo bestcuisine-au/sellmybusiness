@@ -38,7 +38,7 @@ export default function Home() {
         </h1>
         <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-10">
           Why pay a broker $50,000+ to sell your business? Our AI tools give you 
-          everything you need to sell it yourself — professional listings, valuations, 
+          everything you need to sell it yourself — professional listings, price guides, 
           and buyer management at a fraction of the cost.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
@@ -106,7 +106,7 @@ export default function Home() {
         <div className="grid md:grid-cols-4 gap-6">
           <div className="text-center">
             <div className="w-12 h-12 bg-cyan-500 rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold">1</div>
-            <h3 className="text-lg font-semibold text-white mb-2">Get Your Valuation</h3>
+            <h3 className="text-lg font-semibold text-white mb-2">Get Your Price Guide</h3>
             <p className="text-slate-400 text-sm">Our AI analyzes your financials and gives you an instant price range.</p>
           </div>
           <div className="text-center">
@@ -269,7 +269,7 @@ export default function Home() {
           Ready to Sell Your Business?
         </h2>
         <p className="text-xl text-slate-400 mb-8">
-          Start with a free AI valuation. No signup required.
+          Start with a free AI price guide. No signup required.
         </p>
         <Link
           href="/price-guide"
