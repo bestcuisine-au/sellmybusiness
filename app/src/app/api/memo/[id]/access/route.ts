@@ -102,3 +102,38 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     return NextResponse.json({ error: 'Failed to revoke access' }, { status: 500 });
   }
 }
+
+// Upgrade tier
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const session = await getServerSession();
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { id: memoId } = await params;
+    const { accessId, tier } = await req.json();
+
+    if (!accessId || !tier) {
+      return NextResponse.json({ error: 'Access ID and tier required' }, { status: 400 });
+    }
+
+    const access = await prisma.memoAccess.updateMany({
+      where: {
+        id: accessId,
+        memoId,
+        memo: { business: { user: { email: session.user.email } } },
+      },
+      data: { tier },
+    });
+
+    if (access.count === 0) {
+      return NextResponse.json({ error: 'Access not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: 'Tier updated' });
+  } catch (error) {
+    console.error('Update tier error:', error);
+    return NextResponse.json({ error: 'Failed to update tier' }, { status: 500 });
+  }
+}
