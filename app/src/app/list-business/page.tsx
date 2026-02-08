@@ -24,6 +24,7 @@ export default function ListBusinessPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     name: "",
@@ -42,6 +43,51 @@ export default function ListBusinessPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const generateAIDescription = async () => {
+    if (!formData.name || !formData.industry) {
+      setError("Please fill in business name and industry first");
+      return;
+    }
+    
+    setAiLoading(true);
+    setError("");
+    
+    try {
+      const res = await fetch("/api/ai-description", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          businessName: formData.name,
+          industry: formData.industry,
+          location: formData.location,
+          state: formData.state,
+          annualRevenue: formData.annualRevenue ? parseInt(formData.annualRevenue) : null,
+          annualProfit: formData.annualProfit ? parseInt(formData.annualProfit) : null,
+          employees: formData.employees,
+          yearsOperating: formData.establishedYear ? new Date().getFullYear() - parseInt(formData.establishedYear) : null,
+          reasonForSale: formData.reasonForSale,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        if (res.status === 401) {
+          router.push("/login");
+          return;
+        }
+        setError(data.error || "Failed to generate description");
+        return;
+      }
+
+      setFormData({ ...formData, description: data.description });
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setAiLoading(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -240,12 +286,32 @@ export default function ListBusinessPage() {
           {step === 3 && (
             <div className="space-y-4">
               <div>
-                <label className="block text-slate-300 mb-2">Business Description</label>
+                <div className="flex justify-between items-center mb-2">
+                  <label className="text-slate-300">Business Description</label>
+                  <button
+                    type="button"
+                    onClick={generateAIDescription}
+                    disabled={aiLoading}
+                    className="flex items-center gap-2 text-sm bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-4 py-2 rounded-lg hover:opacity-90 transition disabled:opacity-50"
+                  >
+                    {aiLoading ? (
+                      <>
+                        <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        </svg>
+                        Generating...
+                      </>
+                    ) : (
+                      <>✨ AI Generate</>
+                    )}
+                  </button>
+                </div>
                 <textarea
                   name="description"
                   value={formData.description}
                   onChange={handleChange}
-                  rows={5}
+                  rows={8}
                   className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white"
                   placeholder="Describe your business, what makes it special, growth opportunities..."
                 />
@@ -263,7 +329,7 @@ export default function ListBusinessPage() {
               </div>
               <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-lg p-4">
                 <p className="text-cyan-400 text-sm">
-                  💡 <strong>Tip:</strong> Our AI will help enhance your description after you save. You can edit everything before publishing.
+                  💡 <strong>Tip:</strong> Use the AI Generate button to create a professional description based on your business details.
                 </p>
               </div>
             </div>

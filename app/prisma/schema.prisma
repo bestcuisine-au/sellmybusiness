@@ -97,6 +97,7 @@ model Business {
   
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   inquiriesList Inquiry[]
+  infoMemo      InfoMemo?
   
   @@index([status, industry])
   @@index([location, state])
@@ -148,4 +149,54 @@ enum InquiryStatus {
   QUALIFIED
   NOT_INTERESTED
   CLOSED
+}
+
+// Secure Info Memo System
+model InfoMemo {
+  id          String   @id @default(cuid())
+  businessId  String   @unique
+  
+  content     String   @db.Text  // AI-generated memo content
+  videoUrl    String?  // Video walkthrough URL
+  
+  isPublished Boolean  @default(false)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  accessCodes MemoAccess[]
+}
+
+model MemoAccess {
+  id          String   @id @default(cuid())
+  memoId      String
+  
+  buyerName   String
+  buyerEmail  String
+  accessCode  String   @unique  // Unique code for this buyer
+  
+  isRevoked   Boolean  @default(false)
+  expiresAt   DateTime?
+  
+  createdAt   DateTime @default(now())
+  lastViewedAt DateTime?
+  viewCount   Int      @default(0)
+  
+  memo        InfoMemo @relation(fields: [memoId], references: [id], onDelete: Cascade)
+  viewLogs    MemoViewLog[]
+  
+  @@index([accessCode])
+  @@index([memoId, isRevoked])
+}
+
+model MemoViewLog {
+  id          String   @id @default(cuid())
+  accessId    String
+  
+  viewedAt    DateTime @default(now())
+  ipAddress   String?
+  userAgent   String?
+  
+  access      MemoAccess @relation(fields: [accessId], references: [id], onDelete: Cascade)
 }
