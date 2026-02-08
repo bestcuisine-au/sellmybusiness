@@ -156,7 +156,7 @@ const INDUSTRY_MULTIPLES: Record<string, {
     revenueAvg: 0.3,
     typicalPriceLow: 50000,
     typicalPriceHigh: 500000,
-    notes: 'Online presence and inventory quality impact valuation.'
+    notes: 'Online presence and inventory quality impact pricing.'
   },
   'E-commerce': {
     ebitdaAvg: 2.8,
@@ -378,7 +378,7 @@ export async function POST(req: NextRequest) {
     
     if (profit < 50000) {
       confidence = 'Low';
-      confidenceNotes.push('Low profit makes valuation less reliable');
+      confidenceNotes.push('Low profit makes price estimates less reliable');
     }
 
     // Price reasonableness check
@@ -448,7 +448,7 @@ export async function POST(req: NextRequest) {
         profitMargin: Math.round(margin * 10) / 10,
         ownerOperated
       },
-      disclaimer: 'This Price Guide provides an indicative range based on Australian market transaction data and is not a formal business valuation. Actual sale prices depend on buyer demand, negotiation, assets included, lease terms, and market conditions. We recommend consulting a qualified business broker or valuator for important decisions.',
+      disclaimer: 'This Price Guide provides an indicative range based on Australian market transaction data and is not a formal valuation or appraisal. Actual sale prices depend on buyer demand, negotiation, assets included, lease terms, and market conditions. We recommend consulting a qualified professional advisor for important decisions.',
       generatedAt: new Date().toISOString()
     };
 
