@@ -245,12 +245,12 @@ export default function Home() {
           </div>
           <div className="bg-slate-800/30 rounded-2xl p-8 border border-slate-700">
             <h3 className="text-lg font-semibold text-slate-400 mb-2">Premium</h3>
-            <div className="text-4xl font-bold text-white mb-4">$1,499</div>
+            <div className="text-4xl font-bold text-white mb-4">$1,999</div>
             <ul className="space-y-3 text-slate-300 mb-8">
               <li>✓ Everything in Growth</li>
               <li>✓ Info Memo Generator</li>
               <li>✓ Priority support</li>
-              <li>✓ Syndication to portals</li>
+              <li>✓ 3 months marketing included</li>
               <li>✓ 365-day listing</li>
             </ul>
             <Link 
