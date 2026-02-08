@@ -166,6 +166,7 @@ model InfoMemo {
   
   business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
   accessCodes MemoAccess[]
+  documents   MemoDocument[]
 }
 
 model MemoAccess {
@@ -175,6 +176,7 @@ model MemoAccess {
   buyerName   String
   buyerEmail  String
   accessCode  String   @unique  // Unique code for this buyer
+  tier        AccessTier @default(TIER_1)
   
   isRevoked   Boolean  @default(false)
   expiresAt   DateTime?
@@ -199,4 +201,34 @@ model MemoViewLog {
   userAgent   String?
   
   access      MemoAccess @relation(fields: [accessId], references: [id], onDelete: Cascade)
+}
+
+// Confidential Documents (Tier 2)
+model MemoDocument {
+  id          String   @id @default(cuid())
+  memoId      String
+  
+  name        String   // "BAS Statement Q3 2025"
+  category    DocumentCategory
+  fileUrl     String   // Storage URL
+  fileSize    Int?
+  mimeType    String?
+  
+  uploadedAt  DateTime @default(now())
+  
+  memo        InfoMemo @relation(fields: [memoId], references: [id], onDelete: Cascade)
+}
+
+enum DocumentCategory {
+  FINANCIALS      // P&L, Balance Sheet
+  TAX             // BAS statements, tax returns
+  LEASE           // Lease agreements
+  LICENSES        // Business licenses, permits
+  CONTRACTS       // Supplier contracts, employment
+  OTHER
+}
+
+enum AccessTier {
+  TIER_1          // Basic info memo
+  TIER_2          // Full confidential access
 }
