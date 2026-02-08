@@ -18,7 +18,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     }
 
     const { id: memoId } = await params;
-    const { buyerName, buyerEmail, expiresInDays } = await req.json();
+    const { buyerName, buyerEmail, expiresInDays, mobile, address, company } = await req.json();
 
     if (!buyerName || !buyerEmail) {
       return NextResponse.json({ error: 'Buyer name and email required' }, { status: 400 });
@@ -26,11 +26,26 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     const memo = await prisma.infoMemo.findFirst({
       where: { id: memoId, business: { user: { email: session.user.email } } },
+      include: { business: true }
     });
 
     if (!memo) {
       return NextResponse.json({ error: 'Memo not found' }, { status: 404 });
     }
+
+    // Create a prospect for this buyer
+    const prospect = await prisma.prospect.create({
+      data: {
+        businessId: memo.businessId,
+        name: buyerName,
+        email: buyerEmail,
+        mobile: mobile || null,
+        address: address || null,
+        company: company || null,
+        source: 'deal_room',
+        status: 'NEW',
+      }
+    });
 
     const accessCode = generateAccessCode();
     const expiresAt = expiresInDays 
@@ -38,19 +53,26 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       : null;
 
     const access = await prisma.memoAccess.create({
-      data: { memoId, buyerName, buyerEmail, accessCode, expiresAt },
+      data: { 
+        memoId, 
+        buyerName, 
+        buyerEmail, 
+        accessCode, 
+        expiresAt,
+        prospectId: prospect.id
+      },
     });
 
     const accessUrl = `${process.env.NEXTAUTH_URL}/memo/${accessCode}`;
 
-    return NextResponse.json({ access, accessUrl });
+    return NextResponse.json({ access, accessUrl, prospect });
   } catch (error) {
     console.error('Grant access error:', error);
     return NextResponse.json({ error: 'Failed to grant access' }, { status: 500 });
   }
 }
 
-// Get all access codes for a memo
+// Get access codes
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession();
@@ -63,6 +85,11 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     const accessCodes = await prisma.memoAccess.findMany({
       where: { memoId, memo: { business: { user: { email: session.user.email } } } },
       orderBy: { createdAt: 'desc' },
+      include: {
+        prospect: {
+          include: { notes_list: { orderBy: { createdAt: 'desc' } } }
+        }
+      }
     });
 
     return NextResponse.json({ accessCodes });
@@ -83,18 +110,10 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     const { id: memoId } = await params;
     const { accessId } = await req.json();
 
-    const access = await prisma.memoAccess.updateMany({
-      where: {
-        id: accessId,
-        memoId,
-        memo: { business: { user: { email: session.user.email } } },
-      },
+    await prisma.memoAccess.updateMany({
+      where: { id: accessId, memoId, memo: { business: { user: { email: session.user.email } } } },
       data: { isRevoked: true },
     });
-
-    if (access.count === 0) {
-      return NextResponse.json({ error: 'Access not found' }, { status: 404 });
-    }
 
     return NextResponse.json({ message: 'Access revoked' });
   } catch (error) {
@@ -103,7 +122,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   }
 }
 
-// Upgrade tier
+// Update access tier or buyer details
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession();
@@ -112,28 +131,64 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     }
 
     const { id: memoId } = await params;
-    const { accessId, tier } = await req.json();
+    const { accessId, tier, buyerName, buyerEmail, mobile, address, company, noteContent } = await req.json();
 
-    if (!accessId || !tier) {
-      return NextResponse.json({ error: 'Access ID and tier required' }, { status: 400 });
-    }
-
-    const access = await prisma.memoAccess.updateMany({
-      where: {
-        id: accessId,
-        memoId,
-        memo: { business: { user: { email: session.user.email } } },
-      },
-      data: { tier },
+    // Verify ownership
+    const access = await prisma.memoAccess.findFirst({
+      where: { id: accessId, memoId, memo: { business: { user: { email: session.user.email } } } },
+      include: { prospect: true }
     });
 
-    if (access.count === 0) {
+    if (!access) {
       return NextResponse.json({ error: 'Access not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ message: 'Tier updated' });
+    // Update access tier if provided
+    if (tier) {
+      await prisma.memoAccess.update({
+        where: { id: accessId },
+        data: { tier, buyerName: buyerName || access.buyerName, buyerEmail: buyerEmail || access.buyerEmail }
+      });
+    }
+
+    // Update buyer details on MemoAccess
+    if (buyerName || buyerEmail) {
+      await prisma.memoAccess.update({
+        where: { id: accessId },
+        data: { 
+          ...(buyerName && { buyerName }),
+          ...(buyerEmail && { buyerEmail })
+        }
+      });
+    }
+
+    // Update prospect if linked
+    if (access.prospectId) {
+      await prisma.prospect.update({
+        where: { id: access.prospectId },
+        data: {
+          ...(buyerName && { name: buyerName }),
+          ...(buyerEmail && { email: buyerEmail }),
+          ...(mobile !== undefined && { mobile }),
+          ...(address !== undefined && { address }),
+          ...(company !== undefined && { company }),
+        }
+      });
+
+      // Add note if provided
+      if (noteContent?.trim()) {
+        await prisma.prospectNote.create({
+          data: {
+            prospectId: access.prospectId,
+            content: noteContent.trim()
+          }
+        });
+      }
+    }
+
+    return NextResponse.json({ message: 'Updated' });
   } catch (error) {
-    console.error('Update tier error:', error);
-    return NextResponse.json({ error: 'Failed to update tier' }, { status: 500 });
+    console.error('Update access error:', error);
+    return NextResponse.json({ error: 'Failed to update' }, { status: 500 });
   }
 }

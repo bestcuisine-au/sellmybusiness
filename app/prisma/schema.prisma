@@ -244,6 +244,8 @@ model Prospect {
   name        String
   email       String
   phone       String?
+  mobile      String?
+  address     String?
   company     String?
   message     String?
   
@@ -262,6 +264,7 @@ model Prospect {
   
   business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
   memoAccess  MemoAccess?
+  notes_list  ProspectNote[]
   
   @@index([businessId, status])
   @@index([email])
@@ -282,4 +285,56 @@ enum ProspectStatus {
   NEGOTIATING // In discussions
   CLOSED_WON  // Deal done!
   CLOSED_LOST // Didn't work out
+}
+
+// Prospect Notes - timestamped activity log
+model ProspectNote {
+  id          String   @id @default(cuid())
+  prospectId  String
+  
+  content     String   @db.Text
+  
+  createdAt   DateTime @default(now())
+  
+  prospect    Prospect @relation(fields: [prospectId], references: [id], onDelete: Cascade)
+  
+  @@index([prospectId])
+}
+
+// Lead Capture - Price Guide leads before signup
+model Lead {
+  id              String   @id @default(cuid())
+  
+  // Contact info (captured first)
+  name            String
+  email           String
+  phone           String?
+  businessName    String?
+  
+  // Business details (captured second)
+  industry        String?
+  state           String?
+  annualRevenue   Decimal?
+  annualProfit    Decimal?
+  yearsOperating  Int?
+  ownerOperated   Boolean?
+  
+  // Result
+  priceGuideResult Json?   // Store the calculated result
+  
+  // Tracking
+  source          String   @default("price_guide")  // price_guide, landing, etc.
+  utmSource       String?
+  utmMedium       String?
+  utmCampaign     String?
+  
+  // Conversion
+  convertedAt     DateTime?
+  convertedUserId String?
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@index([email])
+  @@index([source, createdAt])
 }

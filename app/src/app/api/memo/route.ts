@@ -15,7 +15,6 @@ export async function POST(req: NextRequest) {
 
     const { businessId } = await req.json();
 
-    // Get business details
     const business = await prisma.business.findFirst({
       where: { id: businessId, user: { email: session.user.email } },
     });
@@ -24,7 +23,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Business not found' }, { status: 404 });
     }
 
-    // Generate AI content for the memo
     const prompt = `Create a professional Information Memorandum for this business sale:
 
 Business: ${business.name}
@@ -56,7 +54,6 @@ Use markdown formatting. Be professional. Use Australian English.`;
 
     const content = completion.choices[0]?.message?.content || '';
 
-    // Create or update info memo
     const memo = await prisma.infoMemo.upsert({
       where: { businessId },
       create: { businessId, content, isPublished: true },
@@ -70,7 +67,6 @@ Use markdown formatting. Be professional. Use Australian English.`;
   }
 }
 
-// Get memo for a business
 export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession();
@@ -94,6 +90,13 @@ export async function GET(req: NextRequest) {
         accessCodes: {
           where: { isRevoked: false },
           orderBy: { createdAt: 'desc' },
+          include: {
+            prospect: {
+              include: {
+                notes_list: { orderBy: { createdAt: 'desc' } }
+              }
+            }
+          }
         },
       },
     });

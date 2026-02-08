@@ -4,43 +4,49 @@ import { useState } from 'react';
 import Link from 'next/link';
 
 const industries = [
-  // Hospitality
-  'Coffee Shop',
-  'Cafe',
-  'Restaurant',
-  'Fine Dining Restaurant',
-  'Pub / Bar / Tavern',
-  'Fast Food / Takeaway',
-  'Fish & Chips / Chicken Shop',
-  'Bakery',
-  'Catering',
-  'Hotel / Motel',
-  // Healthcare
-  'Healthcare & Medical',
-  'Dental Practice',
-  'Medical Practice',
-  'Pharmacy',
-  'Childcare Centre',
-  // Professional
-  'Professional Services',
-  'Accounting Practice',
-  'Legal Practice',
-  // Retail
-  'Retail Shop',
-  'E-commerce',
-  // Trades
-  'Trades & Construction',
-  'Manufacturing',
-  'Transport & Logistics',
-  'Wholesale / Distribution',
-  // Services
-  'Beauty Salon / Hair',
-  'Gym / Fitness',
-  'Automotive',
-  'Other'
+  { value: 'hospitality', label: 'Hospitality / Accommodation' },
+  { value: 'restaurant', label: 'Restaurant / Cafe' },
+  { value: 'retail', label: 'Retail' },
+  { value: 'trades', label: 'Trades & Services' },
+  { value: 'professional', label: 'Professional Services' },
+  { value: 'manufacturing', label: 'Manufacturing' },
+  { value: 'transport', label: 'Transport & Logistics' },
+  { value: 'beauty', label: 'Beauty & Wellness' },
+  { value: 'automotive', label: 'Automotive' },
+  { value: 'construction', label: 'Construction' },
+  { value: 'technology', label: 'Technology / IT' },
+  { value: 'healthcare', label: 'Healthcare' },
+  { value: 'education', label: 'Education / Training' },
+  { value: 'franchise', label: 'Franchise' },
+  { value: 'other', label: 'Other' },
 ];
 
-const states = ['NSW', 'VIC', 'QLD', 'WA', 'SA', 'TAS', 'NT', 'ACT'];
+const states = [
+  { value: 'NSW', label: 'New South Wales' },
+  { value: 'VIC', label: 'Victoria' },
+  { value: 'QLD', label: 'Queensland' },
+  { value: 'WA', label: 'Western Australia' },
+  { value: 'SA', label: 'South Australia' },
+  { value: 'TAS', label: 'Tasmania' },
+  { value: 'NT', label: 'Northern Territory' },
+  { value: 'ACT', label: 'Australian Capital Territory' },
+];
+
+interface ContactData {
+  name: string;
+  email: string;
+  phone: string;
+  businessName: string;
+}
+
+interface BusinessData {
+  industry: string;
+  annualRevenue: string;
+  annualProfit: string;
+  yearsOperating: string;
+  state: string;
+  ownerOperated: boolean;
+}
 
 interface PriceGuideResult {
   priceRange: {
@@ -48,72 +54,115 @@ interface PriceGuideResult {
     mid: number;
     high: number;
   };
-  multiples: {
-    baseLow: number;
-    baseHigh: number;
-    adjustedLow: number;
-    adjustedHigh: number;
-  };
   confidence: string;
-  methodology: string;
   factors: string[];
-  industryInsights: string;
-  inputs: {
-    industry: string;
-    annualRevenue: number;
-    annualProfit: number;
-    yearsOperating: number;
-    state: string;
-    profitMargin: number;
-  };
+  methodology: string;
   disclaimer: string;
-}
-
-function formatCurrency(amount: number): string {
-  if (amount >= 1000000) {
-    return `$${(amount / 1000000).toFixed(2)}M`;
-  }
-  return `$${(amount / 1000).toFixed(0)}K`;
+  multiples: {
+    applied: { low: number; high: number };
+  };
 }
 
 export default function PriceGuidePage() {
-  const [formData, setFormData] = useState({
+  const [step, setStep] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [leadId, setLeadId] = useState<string | null>(null);
+  const [result, setResult] = useState<PriceGuideResult | null>(null);
+
+  const [contactData, setContactData] = useState<ContactData>({
+    name: '',
+    email: '',
+    phone: '',
+    businessName: '',
+  });
+
+  const [businessData, setBusinessData] = useState<BusinessData>({
     industry: '',
     annualRevenue: '',
     annualProfit: '',
     yearsOperating: '',
     state: 'QLD',
-    employees: ''
+    ownerOperated: true,
   });
-  const [result, setResult] = useState<PriceGuideResult | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('en-AU', {
+      style: 'currency',
+      currency: 'AUD',
+      maximumFractionDigits: 0,
+    }).format(value);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError('');
-    setResult(null);
+    setLoading(true);
 
     try {
-      const res = await fetch('/api/price-guide', {
+      const res = await fetch('/api/leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          ...contactData,
+          source: 'price_guide',
+        }),
       });
 
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || 'Failed to generate price guide');
-      }
+      if (!res.ok) throw new Error('Failed to save contact');
 
       const data = await res.json();
-      setResult(data);
-    } catch (err: unknown) {
+      setLeadId(data.leadId);
+      setStep(2);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBusinessSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const priceRes = await fetch('/api/price-guide', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          industry: businessData.industry,
+          annualRevenue: parseFloat(businessData.annualRevenue),
+          annualProfit: parseFloat(businessData.annualProfit),
+          yearsOperating: parseInt(businessData.yearsOperating),
+          state: businessData.state,
+          ownerOperated: businessData.ownerOperated,
+        }),
+      });
+
+      if (!priceRes.ok) {
+        const errData = await priceRes.json();
+        throw new Error(errData.error || 'Failed to generate price guide');
+      }
+
+      const priceGuideResult = await priceRes.json();
+      setResult(priceGuideResult);
+
+      await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...contactData,
+          ...businessData,
+          annualRevenue: businessData.annualRevenue,
+          annualProfit: businessData.annualProfit,
+          yearsOperating: businessData.yearsOperating,
+          priceGuideResult,
+        }),
+      });
+
+      setStep(3);
+    } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong');
     } finally {
       setLoading(false);
@@ -122,7 +171,6 @@ export default function PriceGuidePage() {
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      {/* Header */}
       <nav className="border-b border-slate-700/50 backdrop-blur-sm bg-slate-900/50 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
@@ -137,232 +185,135 @@ export default function PriceGuidePage() {
         </div>
       </nav>
 
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        {/* Hero */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            AI Price Guide
+      <div className="max-w-2xl mx-auto px-4 py-12">
+        <div className="flex items-center justify-center mb-8">
+          <div className="flex items-center space-x-4">
+            <div className={`flex items-center justify-center w-10 h-10 rounded-full ${step >= 1 ? 'bg-cyan-500 text-white' : 'bg-slate-700 text-slate-400'}`}>1</div>
+            <div className={`w-16 h-1 ${step >= 2 ? 'bg-cyan-500' : 'bg-slate-700'}`} />
+            <div className={`flex items-center justify-center w-10 h-10 rounded-full ${step >= 2 ? 'bg-cyan-500 text-white' : 'bg-slate-700 text-slate-400'}`}>2</div>
+            <div className={`w-16 h-1 ${step >= 3 ? 'bg-cyan-500' : 'bg-slate-700'}`} />
+            <div className={`flex items-center justify-center w-10 h-10 rounded-full ${step >= 3 ? 'bg-cyan-500 text-white' : 'bg-slate-700 text-slate-400'}`}>3</div>
+          </div>
+        </div>
+
+        <div className="text-center mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
+            {step === 1 && 'Get Your Free AI Price Guide'}
+            {step === 2 && 'Tell Us About Your Business'}
+            {step === 3 && 'Your Price Guide'}
           </h1>
-          <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-            Get an instant estimate of what your business might be worth. 
-            Free, private, and takes 60 seconds.
+          <p className="text-lg text-slate-400">
+            {step === 1 && 'Enter your details to receive your personalised estimate.'}
+            {step === 2 && "A few more details and we'll calculate your price guide."}
+            {step === 3 && `Here's your estimated selling price range, ${contactData.name.split(' ')[0]}.`}
           </p>
         </div>
 
-        {!result ? (
-          /* Form */
-          <div className="bg-slate-800/50 rounded-2xl p-8 border border-slate-700">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {error && (
-                <div className="bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-3 rounded-lg">
-                  {error}
-                </div>
-              )}
+        {error && (
+          <div className="bg-red-500/10 border border-red-500/50 text-red-400 p-4 rounded-lg mb-6">{error}</div>
+        )}
 
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-slate-300 mb-2">Industry *</label>
-                  <select
-                    name="industry"
-                    value={formData.industry}
-                    onChange={handleChange}
-                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white"
-                    required
-                  >
-                    <option value="">Select industry...</option>
-                    {industries.map((ind) => (
-                      <option key={ind} value={ind}>{ind}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-slate-300 mb-2">State *</label>
-                  <select
-                    name="state"
-                    value={formData.state}
-                    onChange={handleChange}
-                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white"
-                    required
-                  >
-                    {states.map((s) => (
-                      <option key={s} value={s}>{s}</option>
-                    ))}
-                  </select>
-                </div>
+        {step === 1 && (
+          <form onSubmit={handleContactSubmit} className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">Your Name *</label>
+                <input type="text" required value={contactData.name} onChange={(e) => setContactData({ ...contactData, name: e.target.value })} className="w-full px-4 py-3 bg-slate-900 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent" placeholder="John Smith" />
               </div>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-slate-300 mb-2">Annual Revenue *</label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-3 text-slate-400">$</span>
-                    <input
-                      type="number"
-                      name="annualRevenue"
-                      value={formData.annualRevenue}
-                      onChange={handleChange}
-                      className="w-full bg-slate-700 border border-slate-600 rounded-lg pl-8 pr-4 py-3 text-white"
-                      placeholder="e.g. 500000"
-                      required
-                    />
-                  </div>
-                  <p className="text-slate-500 text-sm mt-1">Total sales/turnover last 12 months</p>
-                </div>
-
-                <div>
-                  <label className="block text-slate-300 mb-2">Owner&apos;s Earnings (SDE) *</label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-3 text-slate-400">$</span>
-                    <input
-                      type="number"
-                      name="annualProfit"
-                      value={formData.annualProfit}
-                      onChange={handleChange}
-                      className="w-full bg-slate-700 border border-slate-600 rounded-lg pl-8 pr-4 py-3 text-white"
-                      placeholder="e.g. 120000"
-                      required
-                    />
-                  </div>
-                  <p className="text-slate-500 text-sm mt-1">Net profit + your salary + add-backs</p>
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">Email Address *</label>
+                <input type="email" required value={contactData.email} onChange={(e) => setContactData({ ...contactData, email: e.target.value })} className="w-full px-4 py-3 bg-slate-900 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent" placeholder="john@example.com" />
               </div>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-slate-300 mb-2">Years Operating</label>
-                  <input
-                    type="number"
-                    name="yearsOperating"
-                    value={formData.yearsOperating}
-                    onChange={handleChange}
-                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white"
-                    placeholder="e.g. 5"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-slate-300 mb-2">Number of Employees</label>
-                  <input
-                    type="number"
-                    name="employees"
-                    value={formData.employees}
-                    onChange={handleChange}
-                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white"
-                    placeholder="e.g. 10"
-                  />
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">Phone (optional)</label>
+                <input type="tel" value={contactData.phone} onChange={(e) => setContactData({ ...contactData, phone: e.target.value })} className="w-full px-4 py-3 bg-slate-900 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent" placeholder="0412 345 678" />
               </div>
-
-              <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-lg p-4">
-                <p className="text-cyan-400 text-sm">
-                  <strong>🔒 Your data is private.</strong> We don&apos;t store this information unless you create a listing.
-                </p>
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">Business Name (optional)</label>
+                <input type="text" value={contactData.businessName} onChange={(e) => setContactData({ ...contactData, businessName: e.target.value })} className="w-full px-4 py-3 bg-slate-900 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent" placeholder="Acme Pty Ltd" />
               </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white py-4 rounded-lg font-semibold text-lg transition disabled:opacity-50"
-              >
-                {loading ? 'Calculating...' : 'Get My Price Guide'}
+              <button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 text-white py-4 rounded-lg font-semibold hover:opacity-90 transition disabled:opacity-50">
+                {loading ? 'Saving...' : 'Continue →'}
               </button>
-            </form>
-          </div>
-        ) : (
-          /* Results */
-          <div className="space-y-6">
-            {/* Main Result Card */}
-            <div className="bg-gradient-to-br from-cyan-500/20 to-purple-600/20 rounded-2xl p-8 border border-cyan-500/30">
-              <div className="text-center mb-8">
-                <p className="text-slate-400 mb-2">Your business could be worth</p>
-                <div className="text-5xl md:text-6xl font-bold text-white mb-2">
-                  {formatCurrency(result.priceRange.low)} - {formatCurrency(result.priceRange.high)}
-                </div>
-                <p className="text-slate-400">
-                  Most likely around <span className="text-cyan-400 font-semibold">{formatCurrency(result.priceRange.mid)}</span>
-                </p>
-              </div>
+              <p className="text-xs text-slate-500 text-center">Your information is kept confidential and will never be shared.</p>
+            </div>
+          </form>
+        )}
 
-              <div className="flex justify-center mb-6">
-                <div className={`px-4 py-2 rounded-full text-sm font-medium ${
-                  result.confidence === 'High' ? 'bg-green-500/20 text-green-400' :
-                  result.confidence === 'Medium' ? 'bg-yellow-500/20 text-yellow-400' :
-                  'bg-red-500/20 text-red-400'
-                }`}>
-                  {result.confidence} Confidence
-                </div>
+        {step === 2 && (
+          <form onSubmit={handleBusinessSubmit} className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">Industry *</label>
+                <select required value={businessData.industry} onChange={(e) => setBusinessData({ ...businessData, industry: e.target.value })} className="w-full px-4 py-3 bg-slate-900 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent">
+                  <option value="">Select your industry</option>
+                  {industries.map((ind) => (<option key={ind.value} value={ind.value}>{ind.label}</option>))}
+                </select>
               </div>
-
-              <div className="grid md:grid-cols-3 gap-4 text-center">
-                <div className="bg-slate-800/50 rounded-lg p-4">
-                  <p className="text-slate-400 text-sm">Methodology</p>
-                  <p className="text-white font-semibold">{result.methodology}</p>
-                </div>
-                <div className="bg-slate-800/50 rounded-lg p-4">
-                  <p className="text-slate-400 text-sm">Multiple Range</p>
-                  <p className="text-white font-semibold">{result.multiples.adjustedLow}x - {result.multiples.adjustedHigh}x</p>
-                </div>
-                <div className="bg-slate-800/50 rounded-lg p-4">
-                  <p className="text-slate-400 text-sm">Profit Margin</p>
-                  <p className="text-white font-semibold">{result.inputs.profitMargin}%</p>
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">State *</label>
+                <select required value={businessData.state} onChange={(e) => setBusinessData({ ...businessData, state: e.target.value })} className="w-full px-4 py-3 bg-slate-900 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent">
+                  {states.map((s) => (<option key={s.value} value={s.value}>{s.label}</option>))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">Annual Revenue *</label>
+                <input type="number" required min="0" value={businessData.annualRevenue} onChange={(e) => setBusinessData({ ...businessData, annualRevenue: e.target.value })} className="w-full px-4 py-3 bg-slate-900 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent" placeholder="e.g. 500000" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">Annual Net Profit (after owner salary) *</label>
+                <input type="number" required value={businessData.annualProfit} onChange={(e) => setBusinessData({ ...businessData, annualProfit: e.target.value })} className="w-full px-4 py-3 bg-slate-900 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent" placeholder="e.g. 100000" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">Years in Operation *</label>
+                <input type="number" required min="0" value={businessData.yearsOperating} onChange={(e) => setBusinessData({ ...businessData, yearsOperating: e.target.value })} className="w-full px-4 py-3 bg-slate-900 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent" placeholder="e.g. 5" />
+              </div>
+              <div className="flex items-center space-x-3">
+                <input type="checkbox" id="ownerOperated" checked={businessData.ownerOperated} onChange={(e) => setBusinessData({ ...businessData, ownerOperated: e.target.checked })} className="w-5 h-5 text-cyan-500 bg-slate-900 border-slate-600 rounded focus:ring-cyan-500" />
+                <label htmlFor="ownerOperated" className="text-slate-300">Business is owner-operated (no manager in place)</label>
+              </div>
+              <div className="flex space-x-4 pt-4">
+                <button type="button" onClick={() => setStep(1)} className="flex-1 bg-slate-700 text-white py-4 rounded-lg font-semibold hover:bg-slate-600 transition">← Back</button>
+                <button type="submit" disabled={loading} className="flex-1 bg-gradient-to-r from-cyan-500 to-purple-600 text-white py-4 rounded-lg font-semibold hover:opacity-90 transition disabled:opacity-50">
+                  {loading ? 'Calculating...' : 'Get My Price Guide →'}
+                </button>
               </div>
             </div>
+          </form>
+        )}
 
-            {/* Factors */}
-            {result.factors.length > 0 && (
+        {step === 3 && result && (
+          <div className="space-y-6">
+            <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-8 border border-slate-700 text-center">
+              <p className="text-slate-400 mb-2">Your estimated selling price range:</p>
+              <div className="text-4xl md:text-5xl font-bold text-white mb-4">
+                {formatCurrency(result.priceRange.low)} - {formatCurrency(result.priceRange.high)}
+              </div>
+              <div className="text-lg text-cyan-400 mb-4">Most likely: {formatCurrency(result.priceRange.mid)}</div>
+              <div className={`inline-block px-4 py-1 rounded-full text-sm ${result.confidence === 'HIGH' ? 'bg-green-500/20 text-green-400' : result.confidence === 'MEDIUM' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400'}`}>
+                {result.confidence} confidence
+              </div>
+            </div>
+            {result.factors && result.factors.length > 0 && (
               <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-                <h3 className="text-lg font-semibold text-white mb-4">Valuation Factors</h3>
+                <h3 className="text-lg font-semibold text-white mb-4">Key Factors Considered</h3>
                 <ul className="space-y-2">
-                  {result.factors.map((factor, i) => (
-                    <li key={i} className="flex items-start gap-2 text-slate-300">
-                      <span className="text-cyan-400 mt-1">•</span>
-                      {factor}
-                    </li>
-                  ))}
+                  {result.factors.map((factor, i) => (<li key={i} className="flex items-start space-x-2 text-slate-300"><span className="text-cyan-400">•</span><span>{factor}</span></li>))}
                 </ul>
               </div>
             )}
-
-            {/* Industry Insights */}
             <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-              <h3 className="text-lg font-semibold text-white mb-2">Industry Insights</h3>
-              <p className="text-slate-400">{result.industryInsights}</p>
+              <h3 className="text-lg font-semibold text-white mb-2">Methodology</h3>
+              <p className="text-slate-400 text-sm">{result.methodology} approach using multiples of {result.multiples?.applied?.low?.toFixed(1)}x - {result.multiples?.applied?.high?.toFixed(1)}x</p>
             </div>
-
-            {/* Disclaimer */}
-            <div className="bg-slate-700/30 rounded-xl p-6 border border-slate-600">
-              <p className="text-slate-400 text-sm">{result.disclaimer}</p>
+            <div className="bg-gradient-to-r from-cyan-500/10 to-purple-500/10 rounded-xl p-6 border border-cyan-500/30">
+              <h3 className="text-xl font-bold text-white mb-2">Ready to sell?</h3>
+              <p className="text-slate-300 mb-4">List your business on OwnerExit and save on broker commissions. Our AI tools help you sell faster.</p>
+              <Link href="/signup" className="inline-block bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition">Get Started — From $499</Link>
             </div>
-
-            {/* CTA */}
-
-            {/* Upsell to Detailed Guide */}
-            <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-6 text-center">
-              <h3 className="text-xl font-bold text-white mb-2">Want a more accurate estimate?</h3>
-              <p className="text-slate-400 mb-4">Add assets, lease details, licenses and more.</p>
-              <Link href="/price-guide/detailed" className="inline-block bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold">Get Detailed Estimate</Link>
-            </div>
-
-            {/* Ready to Sell CTA */}
-            <div className="bg-gradient-to-r from-purple-600/20 to-cyan-500/20 rounded-xl p-8 border border-purple-500/30 text-center">
-              <h3 className="text-2xl font-bold text-white mb-2">Ready to sell?</h3>
-              <p className="text-slate-400 mb-6">List your business and save thousands in broker fees.</p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/signup" className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-8 py-3 rounded-lg font-semibold">Create Free Listing</Link>
-                <button onClick={() => setResult(null)} className="border border-slate-600 text-slate-300 px-8 py-3 rounded-lg hover:bg-slate-800">Calculate Again</button>
-              </div>
-            </div>
+            <p className="text-xs text-slate-500 text-center">{result.disclaimer}</p>
           </div>
         )}
-
-        {/* Trust Indicators */}
-        <div className="mt-12 text-center">
-          <p className="text-slate-500 text-sm">
-            Based on thousands of Australian business sales and industry benchmark data
-          </p>
-        </div>
       </div>
     </main>
   );
