@@ -445,6 +445,16 @@ model InfoMemoData {
   recentImprovements    String?
   challengesToNote      String?
   
+  // === VIDEO ===
+  videoUrl          String?   // YouTube, Vimeo, or hosted video URL
+  videoTitle        String?   // e.g. "Business Walkthrough"
+  videoDescription  String?   // Brief description of what the video shows
+
+  // === VISIBILITY SETTINGS ===
+  // JSON object tracking which fields to show in the IM
+  // e.g. {"askingPrice": true, "revenueCurrent": false, ...}
+  fieldVisibility   Json?     @default("{}")
+
   // === META ===
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
