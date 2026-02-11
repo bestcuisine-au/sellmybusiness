@@ -8,7 +8,7 @@ const tiers = [
   {
     id: 'STARTER',
     name: 'Starter',
-    price: 199,
+    price: 499,
     duration: '90 days',
     features: ['AI Price Guide', 'Basic listing page', 'Email inquiries', '90-day listing'],
     cta: 'Get Started',
@@ -17,7 +17,7 @@ const tiers = [
   {
     id: 'GROWTH',
     name: 'Growth',
-    price: 499,
+    price: 999,
     duration: '180 days',
     features: ['Everything in Starter', 'AI Description Writer', 'Featured placement', '180-day listing', 'Priority support'],
     cta: 'Go Growth',
@@ -26,7 +26,7 @@ const tiers = [
   {
     id: 'PREMIUM',
     name: 'Premium',
-    price: 899,
+    price: 1999,
     duration: '365 days',
     features: ['Everything in Growth', 'Info Memo Generator', 'NDA management', 'Buyer access tracking', 'Syndication', '365-day listing'],
     cta: 'Go Premium',
@@ -103,7 +103,7 @@ function PricingContent() {
         <div className="space-y-4">
           <div className="bg-slate-800/50 rounded-lg p-6">
             <h3 className="text-white font-semibold mb-2">How much do brokers charge?</h3>
-            <p className="text-slate-400">5-10% commission. On a $500K sale = $25K-$50K. Our max is $899.</p>
+            <p className="text-slate-400">5-10% commission. On a $500K sale = $25K-$50K. Our max is $1,999.</p>
           </div>
           <div className="bg-slate-800/50 rounded-lg p-6">
             <h3 className="text-white font-semibold mb-2">What happens after payment?</h3>

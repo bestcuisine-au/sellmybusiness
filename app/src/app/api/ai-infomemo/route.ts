@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import OpenAI from 'openai';
+import { checkRateLimit } from '@/lib/rateLimiter';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -12,6 +13,29 @@ export async function POST(req: NextRequest) {
     
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    // Rate limiting: 10 requests per minute per IP
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0] || 
+               req.headers.get('x-real-ip') || 
+               'unknown';
+    const rateLimitResult = checkRateLimit(`ai-infomemo:${ip}`, 10, 60000);
+    
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { 
+          error: 'Rate limit exceeded', 
+          resetIn: Math.ceil(rateLimitResult.resetIn / 1000) 
+        },
+        { 
+          status: 429,
+          headers: {
+            'X-RateLimit-Limit': '10',
+            'X-RateLimit-Remaining': '0',
+            'X-RateLimit-Reset': String(Math.ceil(Date.now() / 1000 + rateLimitResult.resetIn / 1000))
+          }
+        }
+      );
+    }
     }
 
     const data = await req.json();

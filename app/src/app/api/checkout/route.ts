@@ -8,17 +8,17 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 const TIERS = {
   STARTER: {
     name: 'Starter',
-    price: 19900, // $199 in cents
+    price: 49900, // $499 in cents
     features: ['AI Price Guide', 'Basic listing page', 'Email inquiries', '90-day listing']
   },
   GROWTH: {
     name: 'Growth', 
-    price: 49900, // $499 in cents
+    price: 99900, // $999 in cents
     features: ['Everything in Starter', 'AI Description Writer', 'Featured placement', '180-day listing']
   },
   PREMIUM: {
     name: 'Premium',
-    price: 89900, // $899 in cents
+    price: 199900, // $1,999 in cents
     features: ['Everything in Growth', 'Info Memo Generator', 'NDA management', 'Syndication', '365-day listing']
   }
 };

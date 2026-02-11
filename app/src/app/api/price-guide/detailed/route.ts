@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { checkRateLimit } from '@/lib/rateLimiter';
 import { getServerSession } from 'next-auth';
 
 // Industry multiples (same as basic price guide)
@@ -45,6 +46,29 @@ const STATE_FACTORS: Record<string, number> = {
 
 export async function POST(req: NextRequest) {
   try {
+
+    // Rate limiting: 10 requests per minute per IP
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0] || 
+               req.headers.get('x-real-ip') || 
+               'unknown';
+    const rateLimitResult = checkRateLimit(`price-guide:${ip}`, 10, 60000);
+    
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { 
+          error: 'Rate limit exceeded', 
+          resetIn: Math.ceil(rateLimitResult.resetIn / 1000) 
+        },
+        { 
+          status: 429,
+          headers: {
+            'X-RateLimit-Limit': '10',
+            'X-RateLimit-Remaining': '0',
+            'X-RateLimit-Reset': String(Math.ceil(Date.now() / 1000 + rateLimitResult.resetIn / 1000))
+          }
+        }
+      );
+    }
     // Check authentication
     const session = await getServerSession();
     if (!session) {
