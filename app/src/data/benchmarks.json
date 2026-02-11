@@ -1,0 +1,495 @@
+{
+  "metadata": {
+    "source": "Compiled from industry research and ABS data",
+    "note": "⚠️ WARNING: This is SAMPLE data based on typical Australian industry ratios. Official ATO Small Business Benchmarks were not accessible. These should be validated against official ATO data before use in production.",
+    "date_compiled": "2026-02-11",
+    "industries_count": 25,
+    "ato_official_url": "https://www.ato.gov.au/calculators-and-tools/small-business-benchmarks",
+    "verification_needed": true
+  },
+  "industries": [
+    {
+      "industry": "Cafes and Restaurants",
+      "anzsic_code": "4511",
+      "anzsic_division": "Accommodation and Food Services",
+      "turnover_ranges": [
+        {
+          "range": "$0-$200K",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 25, "mid": 30, "high": 35},
+            "labour_cost_pct": {"low": 28, "mid": 35, "high": 42},
+            "rent_pct": {"low": 6, "mid": 9, "high": 13},
+            "total_expenses_pct": {"low": 88, "mid": 94, "high": 98},
+            "motor_vehicle_pct": {"low": 0, "mid": 1, "high": 3},
+            "ebitda_margin_pct": {"low": 2, "mid": 6, "high": 12}
+          }
+        },
+        {
+          "range": "$200K-$500K",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 26, "mid": 32, "high": 38},
+            "labour_cost_pct": {"low": 25, "mid": 32, "high": 38},
+            "rent_pct": {"low": 5, "mid": 8, "high": 12},
+            "total_expenses_pct": {"low": 85, "mid": 92, "high": 96},
+            "motor_vehicle_pct": {"low": 0, "mid": 1, "high": 2},
+            "ebitda_margin_pct": {"low": 4, "mid": 8, "high": 15}
+          }
+        },
+        {
+          "range": "$500K-$2M",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 28, "mid": 34, "high": 40},
+            "labour_cost_pct": {"low": 24, "mid": 30, "high": 36},
+            "rent_pct": {"low": 5, "mid": 8, "high": 11},
+            "total_expenses_pct": {"low": 82, "mid": 90, "high": 94},
+            "motor_vehicle_pct": {"low": 0, "mid": 1, "high": 2},
+            "ebitda_margin_pct": {"low": 6, "mid": 10, "high": 18}
+          }
+        }
+      ]
+    },
+    {
+      "industry": "Takeaway Food Services",
+      "anzsic_code": "4512",
+      "anzsic_division": "Accommodation and Food Services",
+      "turnover_ranges": [
+        {
+          "range": "$0-$200K",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 28, "mid": 35, "high": 42},
+            "labour_cost_pct": {"low": 18, "mid": 25, "high": 32},
+            "rent_pct": {"low": 4, "mid": 7, "high": 10},
+            "total_expenses_pct": {"low": 85, "mid": 92, "high": 96},
+            "motor_vehicle_pct": {"low": 1, "mid": 3, "high": 6},
+            "ebitda_margin_pct": {"low": 4, "mid": 8, "high": 15}
+          }
+        },
+        {
+          "range": "$200K-$500K",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 30, "mid": 36, "high": 42},
+            "labour_cost_pct": {"low": 16, "mid": 22, "high": 28},
+            "rent_pct": {"low": 4, "mid": 6, "high": 9},
+            "total_expenses_pct": {"low": 82, "mid": 89, "high": 94},
+            "motor_vehicle_pct": {"low": 1, "mid": 3, "high": 5},
+            "ebitda_margin_pct": {"low": 6, "mid": 11, "high": 18}
+          }
+        }
+      ]
+    },
+    {
+      "industry": "Pubs, Taverns and Bars",
+      "anzsic_code": "4530",
+      "anzsic_division": "Accommodation and Food Services",
+      "turnover_ranges": [
+        {
+          "range": "$200K-$500K",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 22, "mid": 28, "high": 34},
+            "labour_cost_pct": {"low": 22, "mid": 28, "high": 35},
+            "rent_pct": {"low": 6, "mid": 10, "high": 15},
+            "total_expenses_pct": {"low": 82, "mid": 90, "high": 95},
+            "motor_vehicle_pct": {"low": 0, "mid": 1, "high": 2},
+            "ebitda_margin_pct": {"low": 5, "mid": 10, "high": 18}
+          }
+        }
+      ]
+    },
+    {
+      "industry": "Retail Trade - Supermarkets",
+      "anzsic_code": "4110",
+      "anzsic_division": "Retail Trade",
+      "turnover_ranges": [
+        {
+          "range": "$500K-$2M",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 65, "mid": 72, "high": 78},
+            "labour_cost_pct": {"low": 8, "mid": 12, "high": 16},
+            "rent_pct": {"low": 2, "mid": 4, "high": 6},
+            "total_expenses_pct": {"low": 88, "mid": 94, "high": 97},
+            "motor_vehicle_pct": {"low": 0, "mid": 0.5, "high": 1},
+            "ebitda_margin_pct": {"low": 3, "mid": 6, "high": 12}
+          }
+        }
+      ]
+    },
+    {
+      "industry": "Bakery Products Retailing",
+      "anzsic_code": "4251",
+      "anzsic_division": "Retail Trade",
+      "turnover_ranges": [
+        {
+          "range": "$200K-$500K",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 35, "mid": 42, "high": 50},
+            "labour_cost_pct": {"low": 18, "mid": 24, "high": 30},
+            "rent_pct": {"low": 5, "mid": 8, "high": 12},
+            "total_expenses_pct": {"low": 84, "mid": 91, "high": 96},
+            "motor_vehicle_pct": {"low": 0, "mid": 1, "high": 2},
+            "ebitda_margin_pct": {"low": 4, "mid": 9, "high": 16}
+          }
+        }
+      ]
+    },
+    {
+      "industry": "Building Construction",
+      "anzsic_code": "3011",
+      "anzsic_division": "Construction",
+      "turnover_ranges": [
+        {
+          "range": "$500K-$2M",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 45, "mid": 55, "high": 65},
+            "labour_cost_pct": {"low": 18, "mid": 25, "high": 32},
+            "rent_pct": {"low": 0, "mid": 1, "high": 3},
+            "total_expenses_pct": {"low": 80, "mid": 88, "high": 94},
+            "motor_vehicle_pct": {"low": 2, "mid": 4, "high": 7},
+            "ebitda_margin_pct": {"low": 6, "mid": 12, "high": 20}
+          }
+        }
+      ]
+    },
+    {
+      "industry": "Plumbing Services",
+      "anzsic_code": "3233",
+      "anzsic_division": "Construction",
+      "turnover_ranges": [
+        {
+          "range": "$200K-$500K",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 15, "mid": 22, "high": 30},
+            "labour_cost_pct": {"low": 25, "mid": 35, "high": 45},
+            "rent_pct": {"low": 0, "mid": 2, "high": 4},
+            "total_expenses_pct": {"low": 70, "mid": 82, "high": 90},
+            "motor_vehicle_pct": {"low": 3, "mid": 6, "high": 10},
+            "ebitda_margin_pct": {"low": 10, "mid": 18, "high": 30}
+          }
+        }
+      ]
+    },
+    {
+      "industry": "Electrical Services",
+      "anzsic_code": "3232",
+      "anzsic_division": "Construction",
+      "turnover_ranges": [
+        {
+          "range": "$200K-$500K",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 18, "mid": 25, "high": 32},
+            "labour_cost_pct": {"low": 22, "mid": 32, "high": 42},
+            "rent_pct": {"low": 0, "mid": 2, "high": 4},
+            "total_expenses_pct": {"low": 72, "mid": 84, "high": 92},
+            "motor_vehicle_pct": {"low": 3, "mid": 5, "high": 8},
+            "ebitda_margin_pct": {"low": 8, "mid": 16, "high": 28}
+          }
+        }
+      ]
+    },
+    {
+      "industry": "Accounting Services",
+      "anzsic_code": "6932",
+      "anzsic_division": "Professional, Scientific and Technical Services",
+      "turnover_ranges": [
+        {
+          "range": "$200K-$500K",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 2, "mid": 5, "high": 10},
+            "labour_cost_pct": {"low": 35, "mid": 45, "high": 55},
+            "rent_pct": {"low": 2, "mid": 5, "high": 8},
+            "total_expenses_pct": {"low": 65, "mid": 78, "high": 88},
+            "motor_vehicle_pct": {"low": 1, "mid": 3, "high": 5},
+            "ebitda_margin_pct": {"low": 12, "mid": 22, "high": 35}
+          }
+        }
+      ]
+    },
+    {
+      "industry": "Legal Services",
+      "anzsic_code": "6931",
+      "anzsic_division": "Professional, Scientific and Technical Services",
+      "turnover_ranges": [
+        {
+          "range": "$200K-$500K",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 2, "mid": 5, "high": 10},
+            "labour_cost_pct": {"low": 32, "mid": 42, "high": 52},
+            "rent_pct": {"low": 3, "mid": 6, "high": 10},
+            "total_expenses_pct": {"low": 62, "mid": 75, "high": 85},
+            "motor_vehicle_pct": {"low": 1, "mid": 2, "high": 4},
+            "ebitda_margin_pct": {"low": 15, "mid": 25, "high": 38}
+          }
+        }
+      ]
+    },
+    {
+      "industry": "Hairdressing and Beauty Services",
+      "anzsic_code": "9511",
+      "anzsic_division": "Other Services",
+      "turnover_ranges": [
+        {
+          "range": "$0-$200K",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 8, "mid": 12, "high": 18},
+            "labour_cost_pct": {"low": 35, "mid": 45, "high": 55},
+            "rent_pct": {"low": 8, "mid": 15, "high": 22},
+            "total_expenses_pct": {"low": 75, "mid": 85, "high": 92},
+            "motor_vehicle_pct": {"low": 0, "mid": 1, "high": 2},
+            "ebitda_margin_pct": {"low": 8, "mid": 15, "high": 25}
+          }
+        }
+      ]
+    },
+    {
+      "industry": "Motor Vehicle Repair and Maintenance",
+      "anzsic_code": "9410",
+      "anzsic_division": "Other Services",
+      "turnover_ranges": [
+        {
+          "range": "$200K-$500K",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 25, "mid": 35, "high": 45},
+            "labour_cost_pct": {"low": 22, "mid": 30, "high": 38},
+            "rent_pct": {"low": 3, "mid": 6, "high": 10},
+            "total_expenses_pct": {"low": 75, "mid": 85, "high": 92},
+            "motor_vehicle_pct": {"low": 1, "mid": 2, "high": 4},
+            "ebitda_margin_pct": {"low": 8, "mid": 15, "high": 25}
+          }
+        }
+      ]
+    },
+    {
+      "industry": "Real Estate Services",
+      "anzsic_code": "6720",
+      "anzsic_division": "Rental, Hiring and Real Estate Services",
+      "turnover_ranges": [
+        {
+          "range": "$200K-$500K",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 5, "mid": 10, "high": 15},
+            "labour_cost_pct": {"low": 30, "mid": 40, "high": 50},
+            "rent_pct": {"low": 2, "mid": 5, "high": 8},
+            "total_expenses_pct": {"low": 65, "mid": 78, "high": 88},
+            "motor_vehicle_pct": {"low": 2, "mid": 4, "high": 7},
+            "ebitda_margin_pct": {"low": 12, "mid": 22, "high": 35}
+          }
+        }
+      ]
+    },
+    {
+      "industry": "Gym and Fitness Centres",
+      "anzsic_code": "9311",
+      "anzsic_division": "Arts and Recreation Services",
+      "turnover_ranges": [
+        {
+          "range": "$200K-$500K",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 5, "mid": 10, "high": 15},
+            "labour_cost_pct": {"low": 25, "mid": 35, "high": 45},
+            "rent_pct": {"low": 10, "mid": 18, "high": 25},
+            "total_expenses_pct": {"low": 75, "mid": 85, "high": 92},
+            "motor_vehicle_pct": {"low": 0, "mid": 1, "high": 2},
+            "ebitda_margin_pct": {"low": 8, "mid": 15, "high": 25}
+          }
+        }
+      ]
+    },
+    {
+      "industry": "Computer System Design Services",
+      "anzsic_code": "7000",
+      "anzsic_division": "Professional, Scientific and Technical Services",
+      "turnover_ranges": [
+        {
+          "range": "$200K-$500K",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 5, "mid": 10, "high": 18},
+            "labour_cost_pct": {"low": 35, "mid": 50, "high": 65},
+            "rent_pct": {"low": 1, "mid": 3, "high": 6},
+            "total_expenses_pct": {"low": 60, "mid": 75, "high": 85},
+            "motor_vehicle_pct": {"low": 0, "mid": 1, "high": 3},
+            "ebitda_margin_pct": {"low": 15, "mid": 25, "high": 40}
+          }
+        }
+      ]
+    },
+    {
+      "industry": "Management Advice and Consulting",
+      "anzsic_code": "6962",
+      "anzsic_division": "Professional, Scientific and Technical Services",
+      "turnover_ranges": [
+        {
+          "range": "$200K-$500K",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 3, "mid": 8, "high": 15},
+            "labour_cost_pct": {"low": 30, "mid": 45, "high": 60},
+            "rent_pct": {"low": 1, "mid": 3, "high": 6},
+            "total_expenses_pct": {"low": 58, "mid": 72, "high": 83},
+            "motor_vehicle_pct": {"low": 1, "mid": 3, "high": 6},
+            "ebitda_margin_pct": {"low": 17, "mid": 28, "high": 42}
+          }
+        }
+      ]
+    },
+    {
+      "industry": "Veterinary Services",
+      "anzsic_code": "7540",
+      "anzsic_division": "Professional, Scientific and Technical Services",
+      "turnover_ranges": [
+        {
+          "range": "$200K-$500K",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 15, "mid": 22, "high": 30},
+            "labour_cost_pct": {"low": 28, "mid": 38, "high": 48},
+            "rent_pct": {"low": 4, "mid": 7, "high": 11},
+            "total_expenses_pct": {"low": 72, "mid": 83, "high": 90},
+            "motor_vehicle_pct": {"low": 0, "mid": 1, "high": 3},
+            "ebitda_margin_pct": {"low": 10, "mid": 17, "high": 28}
+          }
+        }
+      ]
+    },
+    {
+      "industry": "Cleaning Services",
+      "anzsic_code": "7321",
+      "anzsic_division": "Administrative and Support Services",
+      "turnover_ranges": [
+        {
+          "range": "$200K-$500K",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 8, "mid": 15, "high": 22},
+            "labour_cost_pct": {"low": 45, "mid": 58, "high": 68},
+            "rent_pct": {"low": 0, "mid": 2, "high": 4},
+            "total_expenses_pct": {"low": 80, "mid": 88, "high": 94},
+            "motor_vehicle_pct": {"low": 2, "mid": 4, "high": 7},
+            "ebitda_margin_pct": {"low": 6, "mid": 12, "high": 20}
+          }
+        }
+      ]
+    },
+    {
+      "industry": "Landscaping Services",
+      "anzsic_code": "7393",
+      "anzsic_division": "Administrative and Support Services",
+      "turnover_ranges": [
+        {
+          "range": "$200K-$500K",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 12, "mid": 20, "high": 28},
+            "labour_cost_pct": {"low": 32, "mid": 42, "high": 52},
+            "rent_pct": {"low": 0, "mid": 2, "high": 4},
+            "total_expenses_pct": {"low": 75, "mid": 85, "high": 92},
+            "motor_vehicle_pct": {"low": 3, "mid": 6, "high": 10},
+            "ebitda_margin_pct": {"low": 8, "mid": 15, "high": 25}
+          }
+        }
+      ]
+    },
+    {
+      "industry": "Courier and Delivery Services",
+      "anzsic_code": "5320",
+      "anzsic_division": "Transport, Postal and Warehousing",
+      "turnover_ranges": [
+        {
+          "range": "$200K-$500K",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 10, "mid": 18, "high": 25},
+            "labour_cost_pct": {"low": 25, "mid": 35, "high": 45},
+            "rent_pct": {"low": 1, "mid": 3, "high": 6},
+            "total_expenses_pct": {"low": 75, "mid": 85, "high": 92},
+            "motor_vehicle_pct": {"low": 12, "mid": 18, "high": 25},
+            "ebitda_margin_pct": {"low": 8, "mid": 15, "high": 25}
+          }
+        }
+      ]
+    },
+    {
+      "industry": "Graphic Design Services",
+      "anzsic_code": "6991",
+      "anzsic_division": "Professional, Scientific and Technical Services",
+      "turnover_ranges": [
+        {
+          "range": "$0-$200K",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 3, "mid": 8, "high": 15},
+            "labour_cost_pct": {"low": 25, "mid": 40, "high": 55},
+            "rent_pct": {"low": 1, "mid": 4, "high": 8},
+            "total_expenses_pct": {"low": 55, "mid": 70, "high": 82},
+            "motor_vehicle_pct": {"low": 0, "mid": 2, "high": 4},
+            "ebitda_margin_pct": {"low": 18, "mid": 30, "high": 45}
+          }
+        }
+      ]
+    },
+    {
+      "industry": "Photography Services",
+      "anzsic_code": "6993",
+      "anzsic_division": "Professional, Scientific and Technical Services",
+      "turnover_ranges": [
+        {
+          "range": "$0-$200K",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 5, "mid": 12, "high": 20},
+            "labour_cost_pct": {"low": 20, "mid": 35, "high": 50},
+            "rent_pct": {"low": 2, "mid": 5, "high": 10},
+            "total_expenses_pct": {"low": 60, "mid": 75, "high": 85},
+            "motor_vehicle_pct": {"low": 2, "mid": 5, "high": 8},
+            "ebitda_margin_pct": {"low": 15, "mid": 25, "high": 40}
+          }
+        }
+      ]
+    },
+    {
+      "industry": "Medical and Dental Practices",
+      "anzsic_code": "8511",
+      "anzsic_division": "Health Care and Social Assistance",
+      "turnover_ranges": [
+        {
+          "range": "$500K-$2M",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 8, "mid": 15, "high": 22},
+            "labour_cost_pct": {"low": 28, "mid": 38, "high": 48},
+            "rent_pct": {"low": 4, "mid": 8, "high": 12},
+            "total_expenses_pct": {"low": 65, "mid": 78, "high": 88},
+            "motor_vehicle_pct": {"low": 0, "mid": 1, "high": 2},
+            "ebitda_margin_pct": {"low": 12, "mid": 22, "high": 35}
+          }
+        }
+      ]
+    },
+    {
+      "industry": "Child Care Services",
+      "anzsic_code": "8710",
+      "anzsic_division": "Health Care and Social Assistance",
+      "turnover_ranges": [
+        {
+          "range": "$200K-$500K",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 5, "mid": 10, "high": 15},
+            "labour_cost_pct": {"low": 52, "mid": 62, "high": 72},
+            "rent_pct": {"low": 6, "mid": 10, "high": 15},
+            "total_expenses_pct": {"low": 82, "mid": 90, "high": 95},
+            "motor_vehicle_pct": {"low": 0, "mid": 1, "high": 2},
+            "ebitda_margin_pct": {"low": 5, "mid": 10, "high": 18}
+          }
+        }
+      ]
+    },
+    {
+      "industry": "Hardware and Building Supplies Retailing",
+      "anzsic_code": "4221",
+      "anzsic_division": "Retail Trade",
+      "turnover_ranges": [
+        {
+          "range": "$500K-$2M",
+          "benchmarks": {
+            "cost_of_sales_pct": {"low": 55, "mid": 65, "high": 72},
+            "labour_cost_pct": {"low": 10, "mid": 15, "high": 20},
+            "rent_pct": {"low": 3, "mid": 5, "high": 8},
+            "total_expenses_pct": {"low": 85, "mid": 92, "high": 96},
+            "motor_vehicle_pct": {"low": 0, "mid": 1, "high": 2},
+            "ebitda_margin_pct": {"low": 4, "mid": 8, "high": 15}
+          }
+        }
+      ]
+    }
+  ]
+}
