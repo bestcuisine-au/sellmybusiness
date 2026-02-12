@@ -291,11 +291,15 @@ export default function HomePage() {
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-cyan-500 to-green-500 rounded-full text-xs font-bold uppercase tracking-wider text-slate-950">
                 Most Popular
               </div>
-              <h3 className="text-lg font-semibold text-white mb-1">Professional</h3>
-              <div className="text-4xl font-extrabold mb-1">
-                $999
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="text-lg font-semibold text-white">Professional</h3>
+                <span className="text-xs font-bold text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full">EARLY ADOPTER</span>
               </div>
-              <p className="text-slate-500 text-sm mb-6">One-time fee</p>
+              <div className="flex items-baseline gap-2 mb-1">
+                <span className="text-4xl font-extrabold">$499</span>
+                <span className="text-lg text-slate-500 line-through">$999</span>
+              </div>
+              <p className="text-cyan-400/80 text-sm mb-6">One-time fee · Limited time</p>
               <ul className="space-y-3 text-slate-300 text-sm mb-8 flex-1">
                 {[
                   "Everything in Starter",
