@@ -1,5 +1,6 @@
 "use client";
 
+import { OwnerVideoSection, BuyerVideoSection } from "./VideoSection";
 import { useState, useCallback, useRef, useEffect } from "react";
 import MarkdownContent from "./MarkdownContent";
 
@@ -84,6 +85,7 @@ const SECTION_DEFS = [
   { type: "staff", title: "Team & Staff", icon: "👥", placeholder: "Click to describe the team structure and key personnel..." },
   { type: "lease", title: "Lease & Property", icon: "🏠", placeholder: "Click to cover location advantages and lease details..." },
   { type: "gallery", title: "Photo Gallery", icon: "📸", placeholder: "Click to add photos of the business..." },
+  { type: "videos", title: "Videos", icon: "🎥", placeholder: "Add videos to showcase your business..." },
 ];
 
 function formatCurrency(val: number | null): string {
@@ -942,6 +944,11 @@ function SectionEditor({
     } catch {
       // Not JSON — it's just text content
     }
+  }
+
+  // Videos section is handled separately in the main component
+  if (def.type === "videos") {
+    return null;
   }
 
   // Gallery section is special
@@ -2050,6 +2057,41 @@ export default function IMClient({ business, initialSections, isOwner }: IMClien
             </div>
           );
         })}
+
+        {/* Video Section */}
+        {(() => {
+          const videoSection = sections.find((s) => s.sectionType === "videos");
+          let videoData: Array<{ url: string; embedUrl: string; platform: "youtube" | "vimeo" | "mp4"; title: string; addedAt: string }> = [];
+          if (videoSection?.content) {
+            try {
+              const parsed = JSON.parse(videoSection.content);
+              videoData = parsed.videos || [];
+            } catch {
+              // ignore parse errors
+            }
+          }
+
+          if (isOwner && !previewMode) {
+            return (
+              <OwnerVideoSection
+                businessId={business.id}
+                initialVideos={videoData}
+              />
+            );
+          }
+
+          // Buyer or preview mode
+          if (videoData.length > 0) {
+            return (
+              <BuyerVideoSection
+                businessId={business.id}
+                videos={videoData}
+                buyerEmail={buyerEmail || ""}
+              />
+            );
+          }
+          return null;
+        })()}
       </main>
 
 

@@ -104,6 +104,7 @@ model Business {
   imViews       IMView[]
   imAccess      IMAccess[]
   offers        Offer[]
+  videoViews    VideoView[]
   
   @@index([status, industry])
   @@index([location, state])
@@ -555,5 +556,22 @@ model Offer {
   updatedAt        DateTime @updatedAt
 
   @@index([businessId])
+  @@index([buyerEmail])
+}
+
+// Video view analytics
+model VideoView {
+  id          String   @id @default(cuid())
+  businessId  String
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  buyerEmail  String
+  videoUrl    String
+  action      String   // play, pause, ended, timeupdate, view
+  watchTime   Int?     // seconds watched
+  totalLength Int?     // total video length
+  timestamp   DateTime @default(now())
+
+  @@index([businessId])
+  @@index([videoUrl])
   @@index([buyerEmail])
 }
