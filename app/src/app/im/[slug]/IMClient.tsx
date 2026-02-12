@@ -91,7 +91,7 @@ function formatCurrency(val: number | null): string {
 }
 
 // ─── Buyer Gate ───
-function BuyerGate({ businessId, businessName, onVerified }: { businessId: string; businessName: string; onVerified: (email: string) => void }) {
+function BuyerGate({ businessId, businessName, onVerified }: { businessId: string; businessName: string; onVerified: (email: string, name: string | null) => void }) {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -110,7 +110,7 @@ function BuyerGate({ businessId, businessName, onVerified }: { businessId: strin
       if (!res.ok) {
         setError(data.error || "Access denied");
       } else {
-        onVerified(email);
+        onVerified(email, data.buyerName || null);
       }
     } catch {
       setError("Something went wrong. Please try again.");
@@ -1145,6 +1145,649 @@ function SidebarNav({ sections, activeSection, isOwner }: { sections: { sectionT
   );
 }
 
+
+// ─── Offer Types ───
+interface OfferData {
+  id: string;
+  businessId: string;
+  buyerEmail: string;
+  buyerName: string;
+  buyerPhone: string | null;
+  offerPrice: string | number;
+  depositAmount: string | number | null;
+  settlementDays: number | null;
+  conditions: string | null;
+  financingDetails: string | null;
+  message: string | null;
+  status: string;
+  createdAt: string;
+}
+
+// ─── Currency Input Helper ───
+function formatNumberInput(value: string): string {
+  const num = value.replace(/[^0-9]/g, "");
+  if (!num) return "";
+  return new Intl.NumberFormat("en-AU").format(parseInt(num));
+}
+
+function parseNumberInput(value: string): number {
+  return parseInt(value.replace(/[^0-9]/g, "")) || 0;
+}
+
+// ─── Buyer Offer Section ───
+function BuyerOfferSection({
+  businessId,
+  buyerEmail,
+  buyerName: initialName,
+  askingPrice,
+}: {
+  businessId: string;
+  buyerEmail: string;
+  buyerName: string;
+  askingPrice: number | null;
+}) {
+  const [formData, setFormData] = useState({
+    buyerName: initialName || "",
+    buyerPhone: "",
+    offerPrice: "",
+    depositAmount: "",
+    settlementDays: "30",
+    conditions: [] as string[],
+    otherCondition: "",
+    financing: "Cash",
+    message: "",
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
+
+  const conditionOptions = [
+    "Subject to due diligence (14 days)",
+    "Subject to finance approval",
+    "Subject to lease assignment",
+    "Subject to accountant review",
+  ];
+
+  const toggleCondition = (condition: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      conditions: prev.conditions.includes(condition)
+        ? prev.conditions.filter((c) => c !== condition)
+        : [...prev.conditions, condition],
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setError("");
+
+    const allConditions = [...formData.conditions];
+    if (formData.otherCondition.trim()) {
+      allConditions.push(formData.otherCondition.trim());
+    }
+
+    try {
+      const res = await fetch("/api/im/offer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          businessId,
+          buyerEmail,
+          buyerName: formData.buyerName,
+          buyerPhone: formData.buyerPhone || null,
+          offerPrice: parseNumberInput(formData.offerPrice),
+          depositAmount: formData.depositAmount ? parseNumberInput(formData.depositAmount) : null,
+          settlementDays: formData.settlementDays === "other" ? null : parseInt(formData.settlementDays),
+          conditions: allConditions.length > 0 ? allConditions.join("; ") : null,
+          financingDetails: formData.financing,
+          message: formData.message || null,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Failed to submit offer");
+      } else {
+        setSubmitted(true);
+      }
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto px-6 py-12">
+      {/* Section divider */}
+      <div className="border-t-2 border-[#2e7847]/20 mb-12" />
+
+      {/* Next Steps Header */}
+      <div className="text-center mb-12">
+        <h2 className="text-3xl font-bold text-gray-900 mb-3">Next Steps</h2>
+        <p className="text-gray-500 text-lg">Your guide to making an informed offer</p>
+      </div>
+
+      {/* Steps Process */}
+      <div className="grid gap-6 mb-12">
+        {[
+          {
+            num: 1,
+            icon: "📖",
+            title: "Review the Information",
+            desc: "Take time to thoroughly review this Information Memorandum. We recommend having your accountant review the financial information presented.",
+          },
+          {
+            num: 2,
+            icon: "⚖️",
+            title: "Seek Professional Advice",
+            desc: "Before making any offer, we strongly recommend you engage a solicitor experienced in business sales to advise you on the transaction.",
+          },
+          {
+            num: 3,
+            icon: "📝",
+            title: "Submit Your Offer",
+            desc: "When you\u2019re ready, submit your offer below with your proposed terms and conditions.",
+          },
+          {
+            num: 4,
+            icon: "🤝",
+            title: "Negotiation",
+            desc: "The seller will review your offer and may accept, counter, or decline. All communication is managed through the platform.",
+          },
+          {
+            num: 5,
+            icon: "🔍",
+            title: "Due Diligence",
+            desc: "Once terms are agreed, you\u2019ll enter a due diligence period to verify the information provided.",
+          },
+          {
+            num: 6,
+            icon: "✅",
+            title: "Settlement",
+            desc: "Your solicitor and the seller\u2019s solicitor will manage the settlement process.",
+          },
+        ].map((step) => (
+          <div key={step.num} className="flex gap-4 items-start">
+            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#2e7847]/10 flex items-center justify-center">
+              <span className="text-xl">{step.icon}</span>
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-xs font-bold text-[#2e7847] bg-[#2e7847]/10 px-2 py-0.5 rounded-full">
+                  Step {step.num}
+                </span>
+                <h3 className="font-semibold text-gray-900">{step.title}</h3>
+              </div>
+              <p className="text-gray-600 text-sm leading-relaxed">{step.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Disclaimer Box */}
+      <div className="bg-[#f0faf3] border-l-4 border-[#2e7847] rounded-r-xl p-6 mb-12">
+        <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+          <span className="text-[#2e7847]">ℹ️</span> Important
+        </h3>
+        <p className="text-gray-700 text-sm leading-relaxed mb-4">
+          OwnerExit.ai is a platform that connects business sellers with buyers. We are not business brokers, financial advisers, or legal practitioners. The financial information in this memorandum has been provided by the seller and has not been independently verified. We strongly recommend:
+        </p>
+        <ul className="space-y-2 text-sm text-gray-700 mb-4">
+          <li className="flex items-start gap-2">
+            <span className="text-[#2e7847] mt-0.5">•</span>
+            <span>Having your <strong>accountant</strong> review all financial data before making an offer</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-[#2e7847] mt-0.5">•</span>
+            <span>Engaging a <strong>solicitor</strong> experienced in business transfers to advise on any agreement</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-[#2e7847] mt-0.5">•</span>
+            <span>Conducting thorough <strong>due diligence</strong> before committing to a purchase</span>
+          </li>
+        </ul>
+        <p className="text-gray-500 text-xs">
+          OwnerExit.ai accepts no responsibility for the accuracy of information provided by sellers.
+        </p>
+      </div>
+
+      {/* Make an Offer Form */}
+      {submitted ? (
+        <div className="bg-[#f0faf3] border border-[#2e7847]/20 rounded-2xl p-8 text-center">
+          <div className="text-5xl mb-4">✅</div>
+          <h3 className="text-2xl font-bold text-gray-900 mb-2">Offer Submitted</h3>
+          <p className="text-gray-600">
+            Your offer has been submitted. The seller will review and respond through the platform.
+          </p>
+        </div>
+      ) : (
+        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+          <div className="bg-gradient-to-r from-[#2e7847] to-[#3a9a5c] px-8 py-6">
+            <h3 className="text-2xl font-bold text-white">Make an Offer</h3>
+            <p className="text-white/80 text-sm mt-1">
+              Submit your offer with proposed terms and conditions
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="p-8 space-y-6">
+            {/* Contact Details */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Your Name *</label>
+                <input
+                  type="text"
+                  required
+                  value={formData.buyerName}
+                  onChange={(e) => setFormData((p) => ({ ...p, buyerName: e.target.value }))}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-[#2e7847] focus:ring-2 focus:ring-[#2e7847]/20 outline-none text-gray-900"
+                  placeholder="Your full name"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input
+                  type="email"
+                  readOnly
+                  value={buyerEmail}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-100 bg-gray-50 text-gray-500 cursor-not-allowed"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+              <input
+                type="tel"
+                value={formData.buyerPhone}
+                onChange={(e) => setFormData((p) => ({ ...p, buyerPhone: e.target.value }))}
+                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-[#2e7847] focus:ring-2 focus:ring-[#2e7847]/20 outline-none text-gray-900"
+                placeholder="04XX XXX XXX"
+              />
+            </div>
+
+            {/* Financial Details */}
+            <div className="border-t border-gray-100 pt-6">
+              <h4 className="font-semibold text-gray-900 mb-4">Offer Details</h4>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Offer Price (AUD) *</label>
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">$</span>
+                    <input
+                      type="text"
+                      required
+                      value={formData.offerPrice}
+                      onChange={(e) => setFormData((p) => ({ ...p, offerPrice: formatNumberInput(e.target.value) }))}
+                      className="w-full pl-8 pr-4 py-3 rounded-lg border border-gray-200 focus:border-[#2e7847] focus:ring-2 focus:ring-[#2e7847]/20 outline-none text-gray-900 text-lg font-semibold"
+                      placeholder="0"
+                    />
+                  </div>
+                  {askingPrice && (
+                    <p className="text-xs text-gray-400 mt-1">Asking price: {formatCurrency(askingPrice)}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Proposed Deposit (AUD)</label>
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">$</span>
+                    <input
+                      type="text"
+                      value={formData.depositAmount}
+                      onChange={(e) => setFormData((p) => ({ ...p, depositAmount: formatNumberInput(e.target.value) }))}
+                      className="w-full pl-8 pr-4 py-3 rounded-lg border border-gray-200 focus:border-[#2e7847] focus:ring-2 focus:ring-[#2e7847]/20 outline-none text-gray-900"
+                      placeholder="0"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Settlement Period */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Settlement Period</label>
+              <select
+                value={formData.settlementDays}
+                onChange={(e) => setFormData((p) => ({ ...p, settlementDays: e.target.value }))}
+                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-[#2e7847] focus:ring-2 focus:ring-[#2e7847]/20 outline-none text-gray-900 bg-white"
+              >
+                <option value="30">30 days</option>
+                <option value="60">60 days</option>
+                <option value="90">90 days</option>
+                <option value="120">120 days</option>
+                <option value="other">Other (specify in message)</option>
+              </select>
+            </div>
+
+            {/* Conditions */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-3">Conditions</label>
+              <div className="space-y-3">
+                {conditionOptions.map((condition) => (
+                  <label key={condition} className="flex items-center gap-3 cursor-pointer group">
+                    <div
+                      className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
+                        formData.conditions.includes(condition)
+                          ? "bg-[#2e7847] border-[#2e7847]"
+                          : "border-gray-300 group-hover:border-[#2e7847]/50"
+                      }`}
+                      onClick={() => toggleCondition(condition)}
+                    >
+                      {formData.conditions.includes(condition) && (
+                        <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </div>
+                    <span
+                      className="text-sm text-gray-700"
+                      onClick={() => toggleCondition(condition)}
+                    >
+                      {condition}
+                    </span>
+                  </label>
+                ))}
+                <div className="flex items-start gap-3">
+                  <div className="mt-3">
+                    <div
+                      className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors cursor-pointer ${
+                        formData.otherCondition.trim()
+                          ? "bg-[#2e7847] border-[#2e7847]"
+                          : "border-gray-300"
+                      }`}
+                    >
+                      {formData.otherCondition.trim() && (
+                        <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <input
+                      type="text"
+                      value={formData.otherCondition}
+                      onChange={(e) => setFormData((p) => ({ ...p, otherCondition: e.target.value }))}
+                      className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#2e7847] focus:ring-2 focus:ring-[#2e7847]/20 outline-none text-gray-900 text-sm"
+                      placeholder="Other condition (specify)"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Financing */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-3">Financing</label>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {["Cash", "Bank finance", "Vendor finance", "Combination"].map((option) => (
+                  <label
+                    key={option}
+                    className={`flex items-center justify-center px-4 py-3 rounded-lg border-2 cursor-pointer transition-all text-sm font-medium ${
+                      formData.financing === option
+                        ? "border-[#2e7847] bg-[#2e7847]/5 text-[#2e7847]"
+                        : "border-gray-200 text-gray-600 hover:border-gray-300"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="financing"
+                      value={option}
+                      checked={formData.financing === option}
+                      onChange={(e) => setFormData((p) => ({ ...p, financing: e.target.value }))}
+                      className="sr-only"
+                    />
+                    {option}
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Message */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Message to Seller</label>
+              <textarea
+                value={formData.message}
+                onChange={(e) => setFormData((p) => ({ ...p, message: e.target.value }))}
+                rows={4}
+                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-[#2e7847] focus:ring-2 focus:ring-[#2e7847]/20 outline-none text-gray-900 resize-none"
+                placeholder="Tell the seller a little about yourself and why you're interested in this business..."
+              />
+            </div>
+
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+                <p className="text-red-600 text-sm">{error}</p>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="w-full bg-[#2e7847] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#245f39] transition-colors disabled:opacity-50 shadow-lg shadow-[#2e7847]/20"
+            >
+              {submitting ? "Submitting..." : "Submit Offer"}
+            </button>
+
+            <p className="text-xs text-gray-400 text-center">
+              By submitting this offer, you acknowledge that it is non-binding and subject to the conditions specified above.
+            </p>
+          </form>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Owner Offers Section ───
+function OwnerOffersSection({ businessId }: { businessId: string }) {
+  const [offers, setOffers] = useState<OfferData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [updating, setUpdating] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch(`/api/im/offer?businessId=${businessId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setOffers(data.offers || []);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [businessId]);
+
+  const updateStatus = async (offerId: string, status: string) => {
+    setUpdating(offerId);
+    try {
+      const res = await fetch("/api/im/offer", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ offerId, status }),
+      });
+      if (res.ok) {
+        setOffers((prev) =>
+          prev.map((o) => (o.id === offerId ? { ...o, status } : o))
+        );
+      }
+    } catch {
+      // Silent fail
+    } finally {
+      setUpdating(null);
+    }
+  };
+
+  const statusBadge = (status: string) => {
+    const styles: Record<string, string> = {
+      PENDING: "bg-yellow-100 text-yellow-800",
+      ACCEPTED: "bg-green-100 text-green-800",
+      REJECTED: "bg-red-100 text-red-800",
+      COUNTERED: "bg-blue-100 text-blue-800",
+      WITHDRAWN: "bg-gray-100 text-gray-600",
+    };
+    return (
+      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${styles[status] || "bg-gray-100 text-gray-600"}`}>
+        {status.charAt(0) + status.slice(1).toLowerCase()}
+      </span>
+    );
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto px-6 py-12">
+      <div className="border-t-2 border-[#2e7847]/20 mb-8" />
+
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-gray-900">📨 Offers Received</h2>
+        <span className="text-sm text-gray-500">{offers.length} offer{offers.length !== 1 ? "s" : ""}</span>
+      </div>
+
+      {loading ? (
+        <div className="text-center py-12">
+          <div className="animate-spin text-3xl mb-3">⏳</div>
+          <p className="text-gray-500">Loading offers...</p>
+        </div>
+      ) : offers.length === 0 ? (
+        <div className="bg-gray-50 rounded-2xl p-12 text-center">
+          <div className="text-5xl mb-4">📭</div>
+          <h3 className="text-xl font-bold text-gray-900 mb-2">No Offers Yet</h3>
+          <p className="text-gray-500">When buyers submit offers, they will appear here.</p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {offers.map((offer) => (
+            <div
+              key={offer.id}
+              className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm"
+            >
+              {/* Offer Header */}
+              <div
+                className="px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 transition-colors"
+                onClick={() => setExpandedId(expandedId === offer.id ? null : offer.id)}
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full bg-[#2e7847]/10 flex items-center justify-center text-[#2e7847] font-bold">
+                    {offer.buyerName.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">{offer.buyerName}</p>
+                    <p className="text-sm text-gray-500">
+                      {new Date(offer.createdAt).toLocaleDateString("en-AU", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <p className="text-xl font-bold text-[#2e7847]">
+                    {formatCurrency(typeof offer.offerPrice === "string" ? parseFloat(offer.offerPrice) : offer.offerPrice)}
+                  </p>
+                  {statusBadge(offer.status)}
+                  <svg
+                    className={`w-5 h-5 text-gray-400 transition-transform ${expandedId === offer.id ? "rotate-180" : ""}`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+
+              {/* Expanded Details */}
+              {expandedId === offer.id && (
+                <div className="border-t border-gray-100 px-6 py-5 bg-gray-50/50">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="text-gray-500">Email:</span>{" "}
+                      <span className="font-medium text-gray-900">{offer.buyerEmail}</span>
+                    </div>
+                    {offer.buyerPhone && (
+                      <div>
+                        <span className="text-gray-500">Phone:</span>{" "}
+                        <span className="font-medium text-gray-900">{offer.buyerPhone}</span>
+                      </div>
+                    )}
+                    {offer.depositAmount && (
+                      <div>
+                        <span className="text-gray-500">Proposed Deposit:</span>{" "}
+                        <span className="font-medium text-gray-900">
+                          {formatCurrency(typeof offer.depositAmount === "string" ? parseFloat(offer.depositAmount) : offer.depositAmount)}
+                        </span>
+                      </div>
+                    )}
+                    {offer.settlementDays && (
+                      <div>
+                        <span className="text-gray-500">Settlement Period:</span>{" "}
+                        <span className="font-medium text-gray-900">{offer.settlementDays} days</span>
+                      </div>
+                    )}
+                    {offer.financingDetails && (
+                      <div>
+                        <span className="text-gray-500">Financing:</span>{" "}
+                        <span className="font-medium text-gray-900">{offer.financingDetails}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {offer.conditions && (
+                    <div className="mt-4">
+                      <span className="text-sm text-gray-500 block mb-1">Conditions:</span>
+                      <p className="text-sm text-gray-900 bg-white rounded-lg px-4 py-3 border border-gray-100">
+                        {offer.conditions}
+                      </p>
+                    </div>
+                  )}
+
+                  {offer.message && (
+                    <div className="mt-4">
+                      <span className="text-sm text-gray-500 block mb-1">Message from Buyer:</span>
+                      <p className="text-sm text-gray-900 bg-white rounded-lg px-4 py-3 border border-gray-100 italic">
+                        &ldquo;{offer.message}&rdquo;
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Action Buttons */}
+                  {offer.status === "PENDING" && (
+                    <div className="flex gap-3 mt-6 pt-4 border-t border-gray-200">
+                      <button
+                        onClick={() => updateStatus(offer.id, "ACCEPTED")}
+                        disabled={updating === offer.id}
+                        className="px-6 py-2.5 bg-[#2e7847] text-white rounded-lg font-medium hover:bg-[#245f39] transition-colors disabled:opacity-50"
+                      >
+                        ✓ Accept
+                      </button>
+                      <button
+                        onClick={() => updateStatus(offer.id, "REJECTED")}
+                        disabled={updating === offer.id}
+                        className="px-6 py-2.5 bg-white border border-red-200 text-red-600 rounded-lg font-medium hover:bg-red-50 transition-colors disabled:opacity-50"
+                      >
+                        ✕ Reject
+                      </button>
+                      <button
+                        onClick={() => updateStatus(offer.id, "COUNTERED")}
+                        disabled={updating === offer.id}
+                        className="px-6 py-2.5 bg-white border border-blue-200 text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition-colors disabled:opacity-50"
+                      >
+                        ↩ Counter
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+
 export default function IMClient({ business, initialSections, isOwner }: IMClientProps) {
   const [sections, setSections] = useState<Section[]>(() => {
     // Merge initial sections with defaults
@@ -1182,12 +1825,13 @@ export default function IMClient({ business, initialSections, isOwner }: IMClien
 
   const [previewMode, setPreviewMode] = useState(false);
   const [buyerEmail, setBuyerEmail] = useState<string | null>(null);
+  const [buyerName, setBuyerName] = useState<string | null>(null);
   const [aiLoading, setAiLoading] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<"saved" | "saving" | "error">("saved");
 
   // If not owner and not verified, show gate
   if (!isOwner && !buyerEmail) {
-    return <BuyerGate businessId={business.id} businessName={business.name} onVerified={setBuyerEmail} />;
+    return <BuyerGate businessId={business.id} businessName={business.name} onVerified={(email, name) => { setBuyerEmail(email); setBuyerName(name); }} />;
   }
 
   const handleSave = async (sectionType: string, content: string, title: string) => {
@@ -1410,6 +2054,19 @@ export default function IMClient({ business, initialSections, isOwner }: IMClien
           );
         })}
       </main>
+
+
+      {/* Make an Offer / Offers Received Section */}
+      {(!isOwner || previewMode) ? (
+        <BuyerOfferSection
+          businessId={business.id}
+          buyerEmail={buyerEmail || ""}
+          buyerName={buyerName || ""}
+          askingPrice={business.askingPrice}
+        />
+      ) : isOwner && !previewMode ? (
+        <OwnerOffersSection businessId={business.id} />
+      ) : null}
 
       {/* Footer */}
       <footer className="border-t border-gray-100 py-8">
