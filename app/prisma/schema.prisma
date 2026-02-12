@@ -100,6 +100,9 @@ model Business {
   infoMemo      InfoMemo?
   prospects     Prospect[]
   memoData      InfoMemoData?
+  imSections    IMSection[]
+  imViews       IMView[]
+  imAccess      IMAccess[]
   
   @@index([status, industry])
   @@index([location, state])
@@ -481,4 +484,52 @@ model InfoMemoSection {
   
   @@unique([memoId, sectionKey])
   @@index([memoId, sortOrder])
+}
+
+// IM (Information Memorandum) - WYSIWYG page
+model IMSection {
+  id          String   @id @default(cuid())
+  businessId  String
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  sectionType String   // hero, overview, operations, financials, growth, assets, staff, lease, gallery
+  title       String
+  content     String?  @db.Text
+  order       Int
+  mediaUrls   String[] // photos/videos for this section
+  isVisible   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([businessId])
+}
+
+model IMView {
+  id          String   @id @default(cuid())
+  businessId  String
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  buyerEmail  String
+  buyerName   String?
+  sectionType String?  // null = whole page view
+  viewedAt    DateTime @default(now())
+  duration    Int?     // seconds spent
+  ipAddress   String?
+  userAgent   String?
+
+  @@index([businessId])
+}
+
+model IMAccess {
+  id          String    @id @default(cuid())
+  businessId  String
+  business    Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  buyerEmail  String    // also the password
+  buyerName   String?
+  granted     Boolean   @default(true)
+  grantedAt   DateTime  @default(now())
+  revokedAt   DateTime?
+  lastViewed  DateTime?
+  viewCount   Int       @default(0)
+
+  @@index([businessId])
+  @@index([buyerEmail])
 }

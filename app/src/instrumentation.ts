@@ -1,6 +1,3 @@
-import { registerGlobalErrorHandlers } from './lib/errorLogger';
+// instrumentation disabled — Edge Runtime incompatible
+export function register() {}
 
-export function register() {
-  registerGlobalErrorHandlers();
-  console.log('Error monitoring initialized');
-}

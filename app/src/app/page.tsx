@@ -1,321 +1,492 @@
 import Link from "next/link";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      {/* Navigation */}
-      <nav className="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
-        <div className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-          OwnerExit.ai
-        </div>
-        <div className="flex gap-4 items-center">
-          <Link href="/price-guide" className="text-slate-300 hover:text-white transition">
-            Free Price Guide
-          </Link>
-          <Link href="/login" className="text-slate-300 hover:text-white transition">
-            Login
-          </Link>
-          <Link
-            href="/signup"
-            className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition"
-          >
-            Get Started
-          </Link>
-        </div>
-      </nav>
+    <main className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
 
-      {/* Hero */}
-      <section className="max-w-7xl mx-auto px-6 pt-20 pb-16 text-center">
-        <div className="inline-block mb-6 px-4 py-2 bg-purple-500/20 rounded-full">
-          <span className="text-purple-300 text-sm font-medium">🚀 Australia&apos;s First AI-Powered FSBO Platform</span>
+      {/* ═══════════ HERO ═══════════ */}
+      <section className="relative overflow-hidden">
+        {/* Decorative blobs */}
+        <div className="absolute -top-40 -left-40 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-green-500/10 rounded-full blur-3xl" />
+
+        <div className="relative max-w-6xl mx-auto px-6 pt-32 pb-24 text-center">
+          <h1 className="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
+            Sell Your Business Like a Pro
+            <br />
+            <span className="bg-gradient-to-r from-cyan-400 to-green-400 bg-clip-text text-transparent">
+              Without the Broker Commission
+            </span>
+          </h1>
+
+          <p className="max-w-3xl mx-auto text-lg md:text-xl text-slate-300 mb-10">
+            Australia&apos;s first AI-powered FSBO platform. Build stunning Information
+            Memorandums, syndicate to SEEK&nbsp;Business and major portals, and manage
+            buyers&nbsp;&mdash;&nbsp;all for a flat fee.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-14">
+            <Link
+              href="/price-guide"
+              className="px-8 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-green-500 text-white font-semibold text-lg hover:opacity-90 transition shadow-lg shadow-cyan-500/20"
+            >
+              Get Your Free Appraisal
+            </Link>
+            <a
+              href="#how-it-works"
+              className="px-8 py-4 rounded-xl border border-slate-600 text-slate-200 font-semibold text-lg hover:border-cyan-400 hover:text-white transition"
+            >
+              See How It Works
+            </a>
+          </div>
+
+          {/* Trust badges */}
+          <div className="flex flex-wrap justify-center gap-6 text-sm text-slate-400">
+            <span className="flex items-center gap-2">
+              <span className="text-xl">🇦🇺</span> Australian Owned
+            </span>
+            <span className="hidden sm:inline text-slate-700">·</span>
+            <span className="flex items-center gap-2">
+              <span className="text-xl">🧠</span> AI-Powered
+            </span>
+            <span className="hidden sm:inline text-slate-700">·</span>
+            <span className="flex items-center gap-2">
+              <span className="text-xl">🌐</span> Syndicated to Major Portals
+            </span>
+          </div>
         </div>
-        <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
-          Sell Your Business.
-          <br />
-          <span className="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-            Keep the Commission.
-          </span>
-        </h1>
-        <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-10">
-          Why pay a broker $50,000+ to sell your business? Our AI tools give you 
-          everything you need to sell it yourself — professional listings, price guides, 
-          and buyer management at a fraction of the cost.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+      </section>
+
+      {/* ═══════════ HOW IT WORKS ═══════════ */}
+      <section id="how-it-works" className="py-24 bg-slate-900/60">
+        <div className="max-w-6xl mx-auto px-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
+            How It Works
+          </h2>
+          <p className="text-slate-400 text-center mb-16 max-w-2xl mx-auto">
+            Five simple steps from appraisal to sold — with AI doing the heavy lifting.
+          </p>
+
+          <div className="space-y-12 md:space-y-0 md:grid md:grid-cols-5 md:gap-4">
+            {[
+              {
+                num: "1",
+                icon: "📊",
+                title: "Get Your Free AI Appraisal",
+                desc: "Instantly know what your business is worth. Our AI analyses your industry, revenue, and market to provide an indicative price range.",
+              },
+              {
+                num: "2",
+                icon: "📝",
+                title: "Build Your Information Memorandum",
+                desc: "Our AI WYSIWYG builder creates a professional, multimedia IM as a live web page. Watch it come together section by section. What you see is what buyers see.",
+              },
+              {
+                num: "3",
+                icon: "🚀",
+                title: "Distribute Everywhere",
+                desc: "One click syndicates your listing to SEEK Business, BizBuySell, Commercial Real Estate, and more. AI writes optimised ads for each platform.",
+              },
+              {
+                num: "4",
+                icon: "🔐",
+                title: "Manage Buyers Securely",
+                desc: "Send NDAs, grant password-protected IM access, track who\u2019s viewing what sections, and auto-chase unresponsive buyers.",
+              },
+              {
+                num: "5",
+                icon: "🤝",
+                title: "Close the Deal",
+                desc: "Review buyer notes, manage negotiations in the deal room, and get real-time analytics on buyer engagement.",
+              },
+            ].map((step) => (
+              <div key={step.num} className="text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-green-500/20 border border-cyan-500/30 mb-4 text-3xl">
+                  {step.icon}
+                </div>
+                <div className="text-xs font-bold text-cyan-400 mb-2 tracking-widest uppercase">
+                  Step {step.num}
+                </div>
+                <h3 className="text-lg font-semibold mb-2">{step.title}</h3>
+                <p className="text-slate-400 text-sm leading-relaxed">{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ FEATURE SHOWCASE ═══════════ */}
+      <section className="py-24">
+        <div className="max-w-6xl mx-auto px-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
+            Everything You Need to Sell&nbsp;Smarter
+          </h2>
+          <p className="text-slate-400 text-center mb-16 max-w-2xl mx-auto">
+            Tools that were previously locked behind expensive broker agreements —
+            now available to every business owner.
+          </p>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                icon: "🧠",
+                title: "AI-Powered WYSIWYG Information Memorandums",
+                desc: "Not a PDF — a living, breathing web page. Our AI writes compelling content for each section. You edit inline, drag-drop photos, embed video. Buyers see a professional, multimedia document with password-protected access and full view tracking.",
+              },
+              {
+                icon: "🌐",
+                title: "Syndicated to Major Business-for-Sale Portals",
+                desc: "For the first time, FSBO sellers can distribute to the same platforms brokers use — SEEK Business, BizBuySell, Commercial Real Estate, and more. Previously only available through expensive broker agreements.",
+              },
+              {
+                icon: "📊",
+                title: "P&L Normalisation & Benchmarking",
+                desc: "Upload your financials and watch AI normalise your profits — removing owner salary, personal expenses, and one-offs to reveal the true earning power of your business. Compare against industry benchmarks.",
+              },
+              {
+                icon: "🔐",
+                title: "Buyer Management & NDA Tracking",
+                desc: "Send NDAs, grant and revoke IM access per buyer, track viewing analytics (who viewed, which sections, how long), and auto-nag buyers who haven\u2019t opened their IM.",
+              },
+              {
+                icon: "📈",
+                title: "Real-Time Analytics Dashboard",
+                desc: "See who\u2019s engaging with your listing. Map overlay of buyer locations, section-by-section interest heatmaps, and cumulative engagement charts. Know which buyers are serious.",
+              },
+              {
+                icon: "✍️",
+                title: "AI Ad Generation for Every Portal",
+                desc: "Each platform has different requirements and character limits. Our AI automatically writes optimised ad copy tailored to SEEK Business, BizBuySell, and every other portal — so you always look your best.",
+              },
+            ].map((feature) => (
+              <div
+                key={feature.title}
+                className="bg-slate-800/50 border border-slate-700/60 rounded-2xl p-8 hover:border-cyan-500/40 transition group"
+              >
+                <div className="text-4xl mb-4">{feature.icon}</div>
+                <h3 className="text-xl font-semibold mb-3 group-hover:text-cyan-300 transition">
+                  {feature.title}
+                </h3>
+                <p className="text-slate-400 text-sm leading-relaxed">{feature.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ BROKER COMPARISON ═══════════ */}
+      <section className="py-24 bg-slate-900/60">
+        <div className="max-w-5xl mx-auto px-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
+            Why Pay a Broker?
+          </h2>
+          <p className="text-slate-400 text-center mb-16 max-w-2xl mx-auto">
+            On a $500K business sale at 5-10% commission, that&apos;s $25,000–$50,000 in
+            fees. Here&apos;s what you get instead.
+          </p>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Traditional Broker */}
+            <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-8">
+              <h3 className="text-xl font-semibold text-red-400 mb-6">
+                Traditional Broker
+              </h3>
+              <ul className="space-y-3 text-slate-300">
+                {[
+                  "5-10% commission ($25K-$50K on $500K sale)",
+                  "Locked into 6-12 month contracts",
+                  "Basic PDF information memorandum",
+                  "Broker controls buyer access",
+                  "Limited visibility on buyer engagement",
+                  "No real-time analytics",
+                  "Broker represents multiple sellers",
+                  "You still do most of the work",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2">
+                    <span className="text-red-400 mt-0.5">✗</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* OwnerExit */}
+            <div className="bg-green-500/10 border border-green-500/30 rounded-2xl p-8">
+              <h3 className="text-xl font-semibold text-green-400 mb-6">
+                OwnerExit.ai
+              </h3>
+              <ul className="space-y-3 text-slate-300">
+                {[
+                  "AI-generated Information Memorandum",
+                  "Syndicated to SEEK Business, BizBuySell, CRE",
+                  "Password-protected buyer access",
+                  "Real-time viewing analytics",
+                  "NDA management",
+                  "AI ad generation for each platform",
+                  "P&L normalisation & benchmarking",
+                  "Full control, flat fee from $499",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2">
+                    <span className="text-green-400 mt-0.5">✓</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ PRICING ═══════════ */}
+      <section id="pricing" className="py-24">
+        <div className="max-w-6xl mx-auto px-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
+            Simple, Transparent Pricing
+          </h2>
+          <p className="text-slate-400 text-center mb-16 max-w-2xl mx-auto">
+            No commissions. No lock-in contracts. Just a flat fee to sell your business like a pro.
+          </p>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Starter */}
+            <div className="bg-slate-800/50 border border-slate-700/60 rounded-2xl p-8 flex flex-col">
+              <h3 className="text-lg font-semibold text-slate-200 mb-1">Starter</h3>
+              <div className="text-4xl font-extrabold mb-1">
+                $499
+              </div>
+              <p className="text-slate-500 text-sm mb-6">One-time fee</p>
+              <ul className="space-y-3 text-slate-300 text-sm mb-8 flex-1">
+                {[
+                  "AI business appraisal",
+                  "Web IM builder (3 AI sections)",
+                  "Buyer management",
+                  "NDA tracking",
+                  "Email support",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2">
+                    <span className="text-green-400">✓</span> {item}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/signup"
+                className="block text-center px-6 py-3 rounded-xl border border-slate-600 text-white font-semibold hover:border-cyan-400 transition"
+              >
+                Get Started
+              </Link>
+            </div>
+
+            {/* Professional — highlighted */}
+            <div className="bg-gradient-to-b from-cyan-500/10 to-green-500/10 border-2 border-cyan-500/50 rounded-2xl p-8 flex flex-col relative">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-cyan-500 to-green-500 rounded-full text-xs font-bold uppercase tracking-wider text-slate-950">
+                Most Popular
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-1">Professional</h3>
+              <div className="text-4xl font-extrabold mb-1">
+                $999
+              </div>
+              <p className="text-slate-500 text-sm mb-6">One-time fee</p>
+              <ul className="space-y-3 text-slate-300 text-sm mb-8 flex-1">
+                {[
+                  "Everything in Starter",
+                  "Unlimited AI-generated sections",
+                  "Portal syndication (SEEK, BizBuySell, CRE)",
+                  "AI ad generation for each platform",
+                  "P&L normalisation & benchmarking",
+                  "Full analytics dashboard",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2">
+                    <span className="text-cyan-400">✓</span> {item}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/signup"
+                className="block text-center px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-green-500 text-white font-semibold hover:opacity-90 transition shadow-lg shadow-cyan-500/20"
+              >
+                Get Started
+              </Link>
+            </div>
+
+            {/* Premium */}
+            <div className="bg-slate-800/50 border border-slate-700/60 rounded-2xl p-8 flex flex-col">
+              <h3 className="text-lg font-semibold text-slate-200 mb-1">Premium</h3>
+              <div className="text-4xl font-extrabold mb-1">
+                $1,999
+              </div>
+              <p className="text-slate-500 text-sm mb-6">One-time fee</p>
+              <ul className="space-y-3 text-slate-300 text-sm mb-8 flex-1">
+                {[
+                  "Everything in Professional",
+                  "Deal room for negotiations",
+                  "Video integration",
+                  "Priority support",
+                  "Dedicated account manager",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2">
+                    <span className="text-green-400">✓</span> {item}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/signup"
+                className="block text-center px-6 py-3 rounded-xl border border-slate-600 text-white font-semibold hover:border-cyan-400 transition"
+              >
+                Get Started
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ SOCIAL PROOF / TRUST ═══════════ */}
+      <section className="py-24 bg-slate-900/60">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-12">
+            Built by People Who&apos;ve Sold Businesses
+          </h2>
+
+          <div className="grid sm:grid-cols-3 gap-8 mb-16">
+            {[
+              {
+                icon: "🇦🇺",
+                title: "Australian Owned & Operated",
+                desc: "Built in Australia, for Australian business owners. Your data stays onshore.",
+              },
+              {
+                icon: "🏢",
+                title: "30+ Years Experience",
+                desc: "Created by business sales professionals who\u2019ve been in the trenches.",
+              },
+              {
+                icon: "🔒",
+                title: "Your Data Stays in Australia",
+                desc: "Hosted on Australian infrastructure. We take privacy and data sovereignty seriously.",
+              },
+            ].map((item) => (
+              <div key={item.title} className="flex flex-col items-center">
+                <div className="text-5xl mb-4">{item.icon}</div>
+                <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
+                <p className="text-slate-400 text-sm">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Placeholder testimonial area */}
+          <div className="bg-slate-800/40 border border-slate-700/40 rounded-2xl p-8 max-w-2xl mx-auto">
+            <p className="text-slate-400 italic text-lg mb-4">
+              &ldquo;Testimonials coming soon — we&apos;re just getting started, but our early
+              users are already seeing the difference.&rdquo;
+            </p>
+            <p className="text-slate-500 text-sm">— The OwnerExit Team</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ FINAL CTA ═══════════ */}
+      <section className="py-24">
+        <div className="max-w-3xl mx-auto px-6 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            Ready to Sell Your Business
+            <br />
+            <span className="bg-gradient-to-r from-cyan-400 to-green-400 bg-clip-text text-transparent">
+              Without Giving Away the Commission?
+            </span>
+          </h2>
+          <p className="text-slate-400 text-lg mb-10">
+            Join Australian business owners who are taking control of their sale.
+            Start with a free AI appraisal — no obligation, no credit card.
+          </p>
           <Link
             href="/price-guide"
-            className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white text-lg px-8 py-4 rounded-xl transition font-semibold"
+            className="inline-block px-10 py-5 rounded-xl bg-gradient-to-r from-cyan-500 to-green-500 text-white font-bold text-lg hover:opacity-90 transition shadow-lg shadow-cyan-500/20"
           >
-            Get Your Free Price Guide →
-          </Link>
-          <Link
-            href="#how-it-works"
-            className="border border-slate-600 text-slate-300 hover:bg-slate-800 text-lg px-8 py-4 rounded-xl transition"
-          >
-            See How It Works
+            Get Your Free Appraisal
           </Link>
         </div>
-        
-        {/* Trust Badges */}
-        <div className="flex flex-wrap justify-center gap-8 text-slate-500">
-          <div className="flex items-center gap-2">
-            <span className="text-green-400">✓</span>
-            <span>No listing fees</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-green-400">✓</span>
-            <span>No commissions</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-green-400">✓</span>
-            <span>AI-powered tools</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-green-400">✓</span>
-            <span>Australian owned</span>
-          </div>
-        </div>
       </section>
 
-      {/* How It Works - Video Section */}
-      <section id="how-it-works" className="max-w-7xl mx-auto px-6 py-20">
-        <h2 className="text-3xl font-bold text-white text-center mb-4">
-          How It Works
-        </h2>
-        <p className="text-slate-400 text-center mb-12 max-w-2xl mx-auto">
-          Watch how easy it is to list and sell your business without a broker
-        </p>
-        
-        {/* Video Placeholder */}
-        <div className="max-w-4xl mx-auto mb-16">
-          <div className="aspect-video bg-slate-800/50 rounded-2xl border border-slate-700 flex items-center justify-center relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-cyan-500/10"></div>
-            <div className="text-center z-10">
-              <div className="w-20 h-20 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 cursor-pointer hover:bg-purple-700 transition">
-                <svg className="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
-                </svg>
-              </div>
-              <p className="text-slate-300 text-lg">Video Coming Soon</p>
-              <p className="text-slate-500 text-sm mt-2">See the platform in action</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Steps */}
-        <div className="grid md:grid-cols-4 gap-6">
-          <div className="text-center">
-            <div className="w-12 h-12 bg-cyan-500 rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold">1</div>
-            <h3 className="text-lg font-semibold text-white mb-2">Get Your Price Guide</h3>
-            <p className="text-slate-400 text-sm">Our AI analyzes your financials and gives you an instant price range.</p>
-          </div>
-          <div className="text-center">
-            <div className="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold">2</div>
-            <h3 className="text-lg font-semibold text-white mb-2">Create Your Listing</h3>
-            <p className="text-slate-400 text-sm">AI writes your description and generates a professional information memo.</p>
-          </div>
-          <div className="text-center">
-            <div className="w-12 h-12 bg-pink-500 rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold">3</div>
-            <h3 className="text-lg font-semibold text-white mb-2">Manage Buyers</h3>
-            <p className="text-slate-400 text-sm">Handle inquiries, send NDAs, and track prospects all in one place.</p>
-          </div>
-          <div className="text-center">
-            <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold">4</div>
-            <h3 className="text-lg font-semibold text-white mb-2">Close the Deal</h3>
-            <p className="text-slate-400 text-sm">Negotiate directly with buyers and keep 100% of your sale price.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Features */}
-      <section className="max-w-7xl mx-auto px-6 py-20">
-        <h2 className="text-3xl font-bold text-white text-center mb-16">
-          AI-Powered Tools That Sell
-        </h2>
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="bg-slate-800/50 rounded-2xl p-8 border border-slate-700 hover:border-cyan-500/50 transition">
-            <div className="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center mb-4">
-              <span className="text-2xl">💰</span>
-            </div>
-            <h3 className="text-xl font-semibold text-white mb-2">AI Price Guide</h3>
-            <p className="text-slate-400 mb-4">
-              Get an instant price range based on your financials, industry benchmarks, and market conditions.
-            </p>
-            <Link href="/price-guide" className="text-cyan-400 hover:text-cyan-300 font-medium">
-              Try it free →
-            </Link>
-          </div>
-          <div className="bg-slate-800/50 rounded-2xl p-8 border border-slate-700 hover:border-purple-500/50 transition">
-            <div className="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mb-4">
-              <span className="text-2xl">✍️</span>
-            </div>
-            <h3 className="text-xl font-semibold text-white mb-2">Smart Descriptions</h3>
-            <p className="text-slate-400 mb-4">
-              AI generates compelling listing descriptions that highlight your business strengths and attract qualified buyers.
-            </p>
-            <span className="text-purple-400 font-medium">Included in all plans</span>
-          </div>
-          <div className="bg-slate-800/50 rounded-2xl p-8 border border-slate-700 hover:border-pink-500/50 transition">
-            <div className="w-12 h-12 bg-pink-500/20 rounded-xl flex items-center justify-center mb-4">
-              <span className="text-2xl">📄</span>
-            </div>
-            <h3 className="text-xl font-semibold text-white mb-2">Info Memo Generator</h3>
-            <p className="text-slate-400 mb-4">
-              Professional information memorandums created automatically — the same quality brokers charge thousands for.
-            </p>
-            <span className="text-pink-400 font-medium">Premium feature</span>
-          </div>
-        </div>
-      </section>
-
-      {/* Comparison - Why Not Use a Broker */}
-      <section className="max-w-7xl mx-auto px-6 py-20">
-        <h2 className="text-3xl font-bold text-white text-center mb-4">
-          Why Sell It Yourself?
-        </h2>
-        <p className="text-slate-400 text-center mb-12 max-w-2xl mx-auto">
-          Brokers charge 5-10% commission. On a $500K business, that&apos;s $25,000-$50,000 in fees.
-        </p>
-        
-        <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
-          <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-8">
-            <h3 className="text-xl font-semibold text-red-400 mb-4">Traditional Broker</h3>
-            <ul className="space-y-3 text-slate-300">
-              <li className="flex items-start gap-2"><span className="text-red-400">✗</span> 5-10% commission ($25K-$50K on $500K sale)</li>
-              <li className="flex items-start gap-2"><span className="text-red-400">✗</span> Locked into 6-12 month contracts</li>
-              <li className="flex items-start gap-2"><span className="text-red-400">✗</span> Limited control over your listing</li>
-              <li className="flex items-start gap-2"><span className="text-red-400">✗</span> Broker represents multiple sellers</li>
-              <li className="flex items-start gap-2"><span className="text-red-400">✗</span> You still do most of the work</li>
-            </ul>
-          </div>
-          <div className="bg-green-500/10 border border-green-500/30 rounded-2xl p-8">
-            <h3 className="text-xl font-semibold text-green-400 mb-4">OwnerExit.ai</h3>
-            <ul className="space-y-3 text-slate-300">
-              <li className="flex items-start gap-2"><span className="text-green-400">✓</span> Flat fee from $499 (save $24,801+)</li>
-              <li className="flex items-start gap-2"><span className="text-green-400">✓</span> No lock-in, cancel anytime</li>
-              <li className="flex items-start gap-2"><span className="text-green-400">✓</span> Full control over your sale</li>
-              <li className="flex items-start gap-2"><span className="text-green-400">✓</span> AI tools work just for you</li>
-              <li className="flex items-start gap-2"><span className="text-green-400">✓</span> Professional results, DIY pricing</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing */}
-      <section className="max-w-7xl mx-auto px-6 py-20">
-        <h2 className="text-3xl font-bold text-white text-center mb-4">Simple Pricing</h2>
-        <p className="text-slate-400 text-center mb-16">No commissions. No hidden fees. Just results.</p>
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="bg-slate-800/30 rounded-2xl p-8 border border-slate-700">
-            <h3 className="text-lg font-semibold text-slate-400 mb-2">Starter</h3>
-            <div className="text-4xl font-bold text-white mb-4">$499</div>
-            <ul className="space-y-3 text-slate-300 mb-8">
-              <li>✓ AI Price Guide</li>
-              <li>✓ Basic listing page</li>
-              <li>✓ AI description writer</li>
-              <li>✓ Email inquiries</li>
-              <li>✓ 90-day listing</li>
-            </ul>
-            <Link 
-              href="/signup"
-              className="block w-full text-center border border-slate-600 text-slate-300 py-3 rounded-lg hover:bg-slate-800 transition"
-            >
-              Get Started
-            </Link>
-          </div>
-          <div className="bg-gradient-to-b from-purple-900/50 to-slate-800/50 rounded-2xl p-8 border border-purple-500/50 relative">
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-purple-600 text-white text-sm px-3 py-1 rounded-full">
-              Most Popular
-            </div>
-            <h3 className="text-lg font-semibold text-purple-400 mb-2">Growth</h3>
-            <div className="text-4xl font-bold text-white mb-4">$999</div>
-            <ul className="space-y-3 text-slate-300 mb-8">
-              <li>✓ Everything in Starter</li>
-              <li>✓ Featured placement</li>
-              <li>✓ Buyer CRM dashboard</li>
-              <li>✓ NDA management</li>
-              <li>✓ 180-day listing</li>
-            </ul>
-            <Link 
-              href="/signup"
-              className="block w-full text-center bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg transition"
-            >
-              Get Started
-            </Link>
-          </div>
-          <div className="bg-slate-800/30 rounded-2xl p-8 border border-slate-700">
-            <h3 className="text-lg font-semibold text-slate-400 mb-2">Premium</h3>
-            <div className="text-4xl font-bold text-white mb-4">$1,999</div>
-            <ul className="space-y-3 text-slate-300 mb-8">
-              <li>✓ Everything in Growth</li>
-              <li>✓ Info Memo Generator</li>
-              <li>✓ Priority support</li>
-              <li>✓ 3 months marketing included</li>
-              <li>✓ 365-day listing</li>
-            </ul>
-            <Link 
-              href="/signup"
-              className="block w-full text-center border border-slate-600 text-slate-300 py-3 rounded-lg hover:bg-slate-800 transition"
-            >
-              Get Started
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="max-w-4xl mx-auto px-6 py-20 text-center">
-        <h2 className="text-4xl font-bold text-white mb-4">
-          Ready to Sell Your Business?
-        </h2>
-        <p className="text-xl text-slate-400 mb-8">
-          Start with a free AI price guide. No signup required.
-        </p>
-        <Link
-          href="/price-guide"
-          className="inline-block bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white text-lg px-10 py-4 rounded-xl transition font-semibold"
-        >
-          Get Your Free Price Guide →
-        </Link>
-      </section>
-
-      {/* Footer */}
-      <footer className="border-t border-slate-800 py-12 mt-20">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
+      {/* ═══════════ FOOTER ═══════════ */}
+      <footer className="border-t border-slate-800 bg-slate-950 py-16">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-12 mb-12">
+            {/* Brand */}
             <div>
-              <div className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent mb-4">
+              <div className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-green-400 bg-clip-text text-transparent mb-4">
                 OwnerExit.ai
               </div>
               <p className="text-slate-500 text-sm">
                 Australia&apos;s first AI-powered platform for selling your business yourself.
               </p>
             </div>
+
+            {/* Product */}
             <div>
               <h4 className="text-white font-semibold mb-4">Product</h4>
               <ul className="space-y-2 text-slate-400 text-sm">
-                <li><Link href="/price-guide" className="hover:text-white transition">Free Price Guide</Link></li>
-                <li><Link href="/signup" className="hover:text-white transition">List Your Business</Link></li>
-                <li><Link href="#how-it-works" className="hover:text-white transition">How It Works</Link></li>
+                <li>
+                  <Link href="/price-guide" className="hover:text-white transition">
+                    Free Appraisal
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/signup" className="hover:text-white transition">
+                    P&amp;L Normaliser
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/signup" className="hover:text-white transition">
+                    IM Builder
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#how-it-works" className="hover:text-white transition">
+                    How It Works
+                  </Link>
+                </li>
               </ul>
             </div>
+
+            {/* Company */}
             <div>
               <h4 className="text-white font-semibold mb-4">Company</h4>
               <ul className="space-y-2 text-slate-400 text-sm">
-                <li><Link href="/about" className="hover:text-white transition">About Us</Link></li>
-                <li><Link href="/contact" className="hover:text-white transition">Contact</Link></li>
+                <li>
+                  <Link href="/about" className="hover:text-white transition">
+                    About Us
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/contact" className="hover:text-white transition">
+                    Contact
+                  </Link>
+                </li>
               </ul>
             </div>
+
+            {/* Legal */}
             <div>
               <h4 className="text-white font-semibold mb-4">Legal</h4>
               <ul className="space-y-2 text-slate-400 text-sm">
-                <li><Link href="/privacy" className="hover:text-white transition">Privacy Policy</Link></li>
-                <li><Link href="/terms" className="hover:text-white transition">Terms of Service</Link></li>
+                <li>
+                  <Link href="/privacy" className="hover:text-white transition">
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/terms" className="hover:text-white transition">
+                    Terms of Service
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>
+
           <div className="border-t border-slate-800 pt-8 text-center text-slate-500 text-sm">
-            <p>© 2026 OwnerExit.ai — Sell smarter, not harder. Australian owned and operated.</p>
+            <p>
+              © 2026 OwnerExit.ai — Sell smarter, not harder. Australian owned and
+              operated.
+            </p>
           </div>
         </div>
       </footer>
