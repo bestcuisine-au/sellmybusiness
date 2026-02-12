@@ -100,6 +100,9 @@ function DashboardContent() {
                 <Link href={`/dashboard/${biz.id}/im-builder`} className="text-purple-400 hover:text-purple-300 text-sm">
                   Build IM
                 </Link>
+                <Link href={`/im/${biz.id}`} className="bg-[#2e7847] text-white px-3 py-1 rounded-lg text-sm font-medium hover:bg-[#245f39] transition">
+                  📄 Build IM
+                </Link>
                 <Link href={`/dashboard/${biz.id}/memo`} className="text-cyan-400 hover:text-cyan-300 text-sm">
                   Deal Room
                 </Link>
