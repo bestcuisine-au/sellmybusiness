@@ -1098,6 +1098,53 @@ function SectionEditor({
 }
 
 // ─── Main Client Component ───
+
+// Sidebar Navigation Component
+function SidebarNav({ sections, activeSection, isOwner }: { sections: { sectionType: string; title: string }[]; activeSection: string; isOwner: boolean }) {
+  const scrollTo = (sectionType: string) => {
+    const el = document.querySelector(`[data-section="${sectionType}"]`);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  return (
+    <nav className="hidden lg:block fixed left-0 top-1/2 -translate-y-1/2 w-56 pl-4 pr-2 z-40">
+      <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-gray-100 p-4">
+        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Sections</h3>
+        <ul className="space-y-1">
+          {sections.map((s) => (
+            <li key={s.sectionType}>
+              <button
+                onClick={() => scrollTo(s.sectionType)}
+                className={`w-full text-left px-3 py-1.5 rounded-lg text-sm transition-all ${
+                  activeSection === s.sectionType
+                    ? "bg-[#2e7847]/10 text-[#2e7847] font-medium"
+                    : "text-gray-500 hover:text-gray-800 hover:bg-gray-50"
+                }`}
+              >
+                {s.title}
+              </button>
+            </li>
+          ))}
+          {!isOwner && (
+            <li>
+              <button
+                onClick={() => scrollTo("make-offer")}
+                className={`w-full text-left px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                  activeSection === "make-offer"
+                    ? "bg-[#2e7847]/10 text-[#2e7847]"
+                    : "text-[#2e7847] hover:bg-[#2e7847]/5"
+                }`}
+              >
+                Make an Offer →
+              </button>
+            </li>
+          )}
+        </ul>
+      </div>
+    </nav>
+  );
+}
+
 export default function IMClient({ business, initialSections, isOwner }: IMClientProps) {
   const [sections, setSections] = useState<Section[]>(() => {
     // Merge initial sections with defaults
@@ -1113,6 +1160,25 @@ export default function IMClient({ business, initialSections, isOwner }: IMClien
       };
     });
   });
+
+  const [activeSection, setActiveSection] = useState("");
+
+  // Track active section on scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            const section = entry.target.getAttribute("data-section");
+            if (section) setActiveSection(section);
+          }
+        }
+      },
+      { rootMargin: "-20% 0px -60% 0px" }
+    );
+    document.querySelectorAll("[data-section]").forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
 
   const [previewMode, setPreviewMode] = useState(false);
   const [buyerEmail, setBuyerEmail] = useState<string | null>(null);
@@ -1315,6 +1381,13 @@ export default function IMClient({ business, initialSections, isOwner }: IMClien
           </div>
         </div>
       )}
+
+      {/* Sidebar Navigation */}
+      <SidebarNav
+        sections={SECTION_DEFS.map((d) => ({ sectionType: d.type, title: d.title }))}
+        activeSection={activeSection}
+        isOwner={isOwner}
+      />
 
       {/* Sections */}
       <main className="max-w-4xl mx-auto px-6 py-8">

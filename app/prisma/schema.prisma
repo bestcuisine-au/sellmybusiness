@@ -103,6 +103,7 @@ model Business {
   imSections    IMSection[]
   imViews       IMView[]
   imAccess      IMAccess[]
+  offers        Offer[]
   
   @@index([status, industry])
   @@index([location, state])
@@ -529,6 +530,29 @@ model IMAccess {
   revokedAt   DateTime?
   lastViewed  DateTime?
   viewCount   Int       @default(0)
+
+  @@index([businessId])
+  @@index([buyerEmail])
+}
+
+// Offers from buyers
+model Offer {
+  id               String   @id @default(cuid())
+  businessId       String
+  business         Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  buyerEmail       String
+  buyerName        String
+  buyerPhone       String?
+  offerPrice       Decimal  @db.Decimal(12,2)
+  terms            String?  @db.Text
+  depositAmount    Decimal? @db.Decimal(12,2)
+  settlementDays   Int?
+  conditions       String?  @db.Text
+  financingDetails String?  @db.Text
+  message          String?  @db.Text
+  status           String   @default("PENDING")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   @@index([businessId])
   @@index([buyerEmail])
