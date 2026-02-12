@@ -6,14 +6,77 @@ import OpenAI from "openai";
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const sectionPrompts: Record<string, string> = {
-  overview: "Write a compelling Business Overview section",
-  operations: "Write a detailed Operations section describing how the business runs day-to-day",
-  financials: "Write a Financial Performance section highlighting key metrics and trends",
-  growth: "Write a Growth Opportunities section identifying realistic expansion paths",
-  assets: "Write an Assets & Equipment section detailing what is included in the sale",
-  staff: "Write a Team & Staff section describing the organisational structure",
-  lease: "Write a Lease & Property section covering location advantages and lease terms",
-  hero: "Write a compelling one-paragraph executive summary",
+  overview: `Write a Business Overview section. Structure:
+- Opening paragraph (2-3 sentences, compelling summary)
+- **Key Highlights** as bullet points (5-8 items: established year, location, revenue, profit, employees, unique selling points)
+- Brief closing paragraph about the opportunity`,
+
+  operations: `Write an Operations section. Structure:
+- Brief intro paragraph about how the business runs
+- **Operating Model** as bullet points (hours, days, seasonal patterns)
+- **Key Systems & Processes** as bullet points
+- **Supplier Relationships** as bullet points if relevant`,
+
+  financials: `Write a Financial Performance section. Structure:
+- Opening statement about financial health
+- **Key Financial Metrics** as a markdown table:
+  | Metric | Value |
+  |--------|-------|
+  | Annual Revenue | $X |
+  | Gross Profit | $X |
+  | EBITDA | $X |
+  | Net Profit | $X |
+- **Revenue Trends** as bullet points (growth, stability, seasonality)
+- Brief note that detailed P&L is available on request`,
+
+  growth: `Write a Growth Opportunities section. Structure:
+- Brief intro paragraph
+- **Immediate Opportunities** (6-12 months) as bullet points with estimated impact
+- **Medium-Term Opportunities** (1-3 years) as bullet points
+- Brief closing about the growth runway`,
+
+  assets: `Write an Assets & Equipment section. Structure:
+- Brief intro about what's included in the sale
+- **Plant & Equipment** as a markdown table:
+  | Item | Description | Est. Value |
+  |------|-------------|-----------|
+  | ... | ... | $X |
+- **Fixtures & Fittings** as bullet points
+- **Intellectual Property** as bullet points (if relevant: brand, website, social media, recipes, processes)
+- **Stock** — brief note about stock included at value`,
+
+  staff: `Write a Team & Staff section. Structure:
+- Brief intro about the team
+- **Organisation Structure** as a markdown table:
+  | Role | Type | Responsibilities |
+  |------|------|-----------------|
+  | Owner/Manager | FT | Overall management, key relationships |
+  | ... | FT/PT/Casual | ... |
+- **Key Personnel** as bullet points (any critical staff, their tenure, replaceability)
+- Brief note about transition/training period offered`,
+
+  lease: `Write a Lease & Property section. Structure:
+- Brief intro about the premises
+- **Lease Summary** as a markdown table:
+  | Detail | Value |
+  |--------|-------|
+  | Location | ... |
+  | Lease Term | X years |
+  | Remaining | X years |
+  | Options | X x X years |
+  | Annual Rent | $X |
+  | Outgoings | $X |
+  | Reviews | Annual CPI / Market |
+- **Premises Description** as bullet points (size, features, condition, parking)
+- Brief note about landlord relationship`,
+
+  gallery: `Write a brief Photo Gallery introduction. Just 1-2 sentences inviting the reader to browse the images of the business premises, team, and operations.`,
+
+  hero: `Write a compelling one-paragraph executive summary. Structure:
+- A single powerful paragraph (3-5 sentences) that captures the essence of the business opportunity
+- Mention key selling points: revenue, profit, location, established history, growth potential
+- Use **bold** for the most important figures
+- Make it compelling enough that a buyer wants to read the full document`,
 };
 
 export async function POST(req: Request) {
@@ -76,12 +139,18 @@ export async function POST(req: Request) {
       messages: [
         {
           role: "system",
-          content: `You are an expert business broker writing Information Memorandums for Australian businesses. 
-Write in Australian English (use "organisation", "normalise", "colour", "centre", "analyse", "licence").
-Never use the word "valuation" — use "appraisal" instead.
+          content: `You are an expert business broker writing Information Memorandums for Australian businesses.
+Write in Australian English (normalise, organisation, colour, centre, analyse, licence).
+Never use "valuation" — use "appraisal" instead.
 Be professional but engaging. Use concrete details where available.
-Format with paragraphs. Do NOT use markdown headers — the section title is handled separately.
-Write 200-400 words.`,
+
+FORMAT RULES (critical):
+- Use **bullet points** for key highlights and features
+- Use **markdown tables** for structured data (financials, assets, lease terms, staff)
+- Use short paragraphs (2-3 sentences max) between structured elements
+- Start each section with a brief intro paragraph, then switch to bullets/tables
+- Use **bold** for key figures and important terms
+- Do NOT use markdown headers (# ## ###) — the section title is handled separately`,
         },
         {
           role: "user",
@@ -89,7 +158,7 @@ Write 200-400 words.`,
         },
       ],
       temperature: 0.7,
-      max_tokens: 800,
+      max_tokens: 1200,
     });
 
     const content = completion.choices[0]?.message?.content || "";

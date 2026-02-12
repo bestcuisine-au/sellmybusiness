@@ -178,10 +178,17 @@ export async function POST(req: Request) {
         {
           role: "system",
           content: `You are an expert business broker writing Information Memorandums for Australian businesses.
-Write in Australian English (use "organisation", "normalise", "colour", "centre", "analyse", "licence", "favour", "honour").
+Write in Australian English (normalise, organisation, colour, centre, analyse, licence, favour, honour).
 NEVER use the word "valuation" — use "appraisal" instead.
 Be professional, compelling but factual. Use concrete details where available.
-Write in prose paragraphs — do NOT use markdown headers, bullet points, or bold text.`,
+
+FORMAT RULES (critical):
+- Use **bullet points** for key highlights and features
+- Use **markdown tables** for structured data (financials, assets, lease terms, staff)
+- Use short paragraphs (2-3 sentences max) between structured elements
+- Start each section with a brief intro paragraph, then switch to bullets/tables
+- Use **bold** for key figures and important terms
+- Do NOT use markdown headers (# ## ###) — the section title is handled separately`,
         },
         {
           role: "user",
@@ -198,19 +205,19 @@ ${truncatedText}
 
 Generate JSON with these sections (skip any where you don't have enough info):
 {
-  "overview": "Business overview paragraph (200-400 words)",
-  "operations": "How the business operates day-to-day (200-300 words)",
-  "growth": "Growth opportunities based on what you see (150-250 words)",
-  "assets": "Assets and equipment mentioned (100-200 words)",
-  "staff": "Team and staff information (100-200 words)",
-  "lease": "Location and property details (100-200 words)"
+  "overview": "Business overview with opening paragraph, then **Key Highlights** as bullet points (5-8 items), closing paragraph (200-400 words)",
+  "operations": "Operations with intro paragraph, then **Operating Model** bullet points, **Key Systems & Processes** bullet points (200-300 words)",
+  "growth": "Growth opportunities with intro, then **Immediate Opportunities** bullet points, **Medium-Term Opportunities** bullet points (150-250 words)",
+  "assets": "Assets section with **Plant & Equipment** as a markdown table (| Item | Description | Est. Value |), then **Fixtures & Fittings** bullet points (100-200 words)",
+  "staff": "Team section with **Organisation Structure** as a markdown table (| Role | Type | Responsibilities |), then **Key Personnel** bullet points (100-200 words)",
+  "lease": "Lease section with **Lease Summary** as a markdown table (| Detail | Value |), then **Premises Description** bullet points (100-200 words)"
 }
 
 Return ONLY the JSON object. No markdown fences, no explanation.`,
         },
       ],
       temperature: 0.7,
-      max_tokens: 3000,
+      max_tokens: 4000,
     });
 
     const aiContent = completion.choices[0]?.message?.content || "";

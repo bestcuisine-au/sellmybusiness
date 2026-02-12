@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import MarkdownContent from "./MarkdownContent";
 
 // ─── Types ───
 interface Business {
@@ -1013,9 +1014,7 @@ function SectionEditor({
           <span className="text-2xl">{def.icon}</span>
           <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
         </div>
-        <div className="prose prose-lg max-w-none text-gray-700 whitespace-pre-wrap leading-relaxed">
-          {content}
-        </div>
+        <MarkdownContent content={content || ""} />
       </section>
     );
   }
@@ -1082,9 +1081,7 @@ function SectionEditor({
           {isEmpty ? (
             <p className="text-gray-400 italic">{def.placeholder}</p>
           ) : (
-            <div className="prose prose-lg max-w-none text-gray-700 whitespace-pre-wrap leading-relaxed">
-              {content}
-            </div>
+            <MarkdownContent content={content || ""} />
           )}
         </div>
       )}
