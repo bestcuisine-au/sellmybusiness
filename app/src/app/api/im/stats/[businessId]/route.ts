@@ -1,8 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/db";
 
-export async function GET(req: Request, { params }: { params: { businessId: string } }) {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ businessId: string }> }
+) {
   try {
     const session = await getServerSession();
     if (!session?.user?.email) {
@@ -16,10 +19,8 @@ export async function GET(req: Request, { params }: { params: { businessId: stri
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    const { searchParams } = new URL(req.url);
-    const { businessId } = params;
-
-    const id = businessId;
+    // Ensure Next.js dynamic route params typing stays compatible
+    const { businessId } = await params;
 
     if (!businessId) {
       return NextResponse.json({ error: "businessId required" }, { status: 400 });
@@ -45,10 +46,8 @@ export async function GET(req: Request, { params }: { params: { businessId: stri
       prisma.iMView.count({ where: { businessId } }),
     ]);
 
-    // Unique viewers
     const uniqueViewers = new Set(views.map((v) => v.buyerEmail)).size;
 
-    // Views by section
     const sectionViews = views.reduce((acc, v) => {
       const key = v.sectionType || "page";
       acc[key] = (acc[key] || 0) + 1;

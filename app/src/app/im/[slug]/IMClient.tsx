@@ -165,7 +165,7 @@ function SectionEditor({
   const [content, setContent] = useState(section.content || "");
   const [title, setTitle] = useState(section.title || def.title);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const saveTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const saveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     setContent(section.content || "");
