@@ -76,7 +76,7 @@ interface RequestBody {
     depreciation: string;
     otherExpenses: { description: string; amount: string }[];
   };
-  normalizationAnswers: {
+  normalisationAnswers: {
     ownerHours: string;
     nonWorkingPayroll: string;
     ownPremises: string;
@@ -109,7 +109,7 @@ function getBenchmarkForIndustry(industryCode: string, revenue: number) {
 export async function POST(request: NextRequest) {
   try {
     const body: RequestBody = await request.json();
-    const { contactData, businessDetails, plData, normalizationAnswers } = body;
+    const { contactData, businessDetails, plData, normalisationAnswers } = body;
 
     // Parse all numbers
     const revenue = parseFloat(plData.revenue);
@@ -144,7 +144,7 @@ export async function POST(request: NextRequest) {
     const addbacks: { description: string; amount: number; explanation: string }[] = [];
 
     // Owner salary replacement adjustment
-    const ownerHours = parseFloat(normalizationAnswers.ownerHours);
+    const ownerHours = parseFloat(normalisationAnswers.ownerHours);
     const marketRateSalary = ownerHours >= 40 ? 80000 : (ownerHours / 40) * 80000;
     const ownerSalaryAddback = ownerSalary - marketRateSalary;
     if (ownerSalaryAddback !== 0) {
@@ -159,21 +159,21 @@ export async function POST(request: NextRequest) {
     }
 
     // Non-working payroll addback
-    if (normalizationAnswers.nonWorkingPayroll) {
-      const match = normalizationAnswers.nonWorkingPayroll.match(/\$?(\d+(?:,\d{3})*(?:\.\d{2})?)/);
+    if (normalisationAnswers.nonWorkingPayroll) {
+      const match = normalisationAnswers.nonWorkingPayroll.match(/\$?(\d+(?:,\d{3})*(?:\.\d{2})?)/);
       if (match) {
         const amount = parseFloat(match[1].replace(/,/g, ''));
         addbacks.push({
           description: 'Non-Working Payroll',
           amount: amount,
-          explanation: normalizationAnswers.nonWorkingPayroll,
+          explanation: normalisationAnswers.nonWorkingPayroll,
         });
       }
     }
 
     // Rent adjustment if owner owns premises
-    if (normalizationAnswers.ownPremises === 'yes' && normalizationAnswers.marketRent) {
-      const marketRent = parseFloat(normalizationAnswers.marketRent);
+    if (normalisationAnswers.ownPremises === 'yes' && normalisationAnswers.marketRent) {
+      const marketRent = parseFloat(normalisationAnswers.marketRent);
       const rentAddback = rent - marketRent;
       if (rentAddback !== 0) {
         addbacks.push({
@@ -188,7 +188,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Personal expenses addbacks
-    normalizationAnswers.personalExpenses.forEach((exp) => {
+    normalisationAnswers.personalExpenses.forEach((exp) => {
       if (exp.description && exp.amount) {
         const amount = parseFloat(exp.amount);
         addbacks.push({
@@ -200,7 +200,7 @@ export async function POST(request: NextRequest) {
     });
 
     // One-off costs addbacks
-    normalizationAnswers.oneOffCosts.forEach((cost) => {
+    normalisationAnswers.oneOffCosts.forEach((cost) => {
       if (cost.description && cost.amount) {
         const amount = parseFloat(cost.amount);
         addbacks.push({
@@ -224,25 +224,25 @@ export async function POST(request: NextRequest) {
       explanation: 'Non-cash expense added back to calculate EBITDA.',
     });
 
-    // Calculate total addbacks and normalized EBITDA
+    // Calculate total addbacks and normalised EBITDA
     const totalAddbacks = addbacks.reduce((sum, ab) => sum + ab.amount, 0);
-    const normalizedEBITDA = reportedEBITDA + totalAddbacks - interest - depreciation; // Remove I&D since we're showing them separately
+    const normalisedEBITDA = reportedEBITDA + totalAddbacks - interest - depreciation; // Remove I&D since we're showing them separately
 
     // Actually, let me recalculate this properly
-    // Normalized EBITDA = Revenue - Normalized Operating Expenses (excluding I&D)
-    const normalizedCOGS = cogs;
-    const normalizedOwnerSalary = marketRateSalary;
-    const normalizedStaffWages = staffWages - (normalizationAnswers.nonWorkingPayroll ? parseFloat(normalizationAnswers.nonWorkingPayroll.match(/\$?(\d+(?:,\d{3})*(?:\.\d{2})?)/)?.[1]?.replace(/,/g, '') || '0') : 0);
-    const normalizedRent = normalizationAnswers.ownPremises === 'yes' && normalizationAnswers.marketRent ? parseFloat(normalizationAnswers.marketRent) : rent;
-    const normalizedMotorVehicle = motorVehicle;
+    // Normalised EBITDA = Revenue - Normalised Operating Expenses (excluding I&D)
+    const normalisedCOGS = cogs;
+    const normalisedOwnerSalary = marketRateSalary;
+    const normalisedStaffWages = staffWages - (normalisationAnswers.nonWorkingPayroll ? parseFloat(normalisationAnswers.nonWorkingPayroll.match(/\$?(\d+(?:,\d{3})*(?:\.\d{2})?)/)?.[1]?.replace(/,/g, '') || '0') : 0);
+    const normalisedRent = normalisationAnswers.ownPremises === 'yes' && normalisationAnswers.marketRent ? parseFloat(normalisationAnswers.marketRent) : rent;
+    const normalisedMotorVehicle = motorVehicle;
     
     // Subtract personal and one-off expenses
-    const personalExpensesTotal = normalizationAnswers.personalExpenses.reduce((sum, exp) => sum + (parseFloat(exp.amount) || 0), 0);
-    const oneOffCostsTotal = normalizationAnswers.oneOffCosts.reduce((sum, cost) => sum + (parseFloat(cost.amount) || 0), 0);
-    const normalizedOtherExpenses = otherExpensesTotal - personalExpensesTotal - oneOffCostsTotal;
+    const personalExpensesTotal = normalisationAnswers.personalExpenses.reduce((sum, exp) => sum + (parseFloat(exp.amount) || 0), 0);
+    const oneOffCostsTotal = normalisationAnswers.oneOffCosts.reduce((sum, cost) => sum + (parseFloat(cost.amount) || 0), 0);
+    const normalisedOtherExpenses = otherExpensesTotal - personalExpensesTotal - oneOffCostsTotal;
 
-    const normalizedNetProfitBeforeID = revenue - normalizedCOGS - normalizedOwnerSalary - normalizedStaffWages - normalizedRent - normalizedMotorVehicle - normalizedOtherExpenses;
-    const actualNormalizedEBITDA = normalizedNetProfitBeforeID; // This is EBITDA (before interest and depreciation)
+    const normalisedNetProfitBeforeID = revenue - normalisedCOGS - normalisedOwnerSalary - normalisedStaffWages - normalisedRent - normalisedMotorVehicle - normalisedOtherExpenses;
+    const actualNormalisedEBITDA = normalisedNetProfitBeforeID; // This is EBITDA (before interest and depreciation)
 
     // Get industry benchmarks
     const benchmarks = getBenchmarkForIndustry(businessDetails.industry, revenue);
@@ -276,7 +276,7 @@ export async function POST(request: NextRequest) {
         status: rentPercent <= benchmarks.rent_pct.high ? 'good' : 'poor',
       });
 
-      const ebitdaMargin = (actualNormalizedEBITDA / revenue) * 100;
+      const ebitdaMargin = (actualNormalisedEBITDA / revenue) * 100;
       const ebitdaAvg = benchmarks.ebitda_margin_pct.mid;
       benchmarkComparison.push({
         metric: 'EBITDA Margin',
@@ -291,23 +291,23 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Calculate valuation range
+    // Calculate appraisal range
     const multiples = INDUSTRY_MULTIPLES[businessDetails.industry] || { low: 2, high: 3 };
-    const valuationRange = {
-      low: Math.round(actualNormalizedEBITDA * multiples.low),
-      high: Math.round(actualNormalizedEBITDA * multiples.high),
+    const appraisalRange = {
+      low: Math.round(actualNormalisedEBITDA * multiples.low),
+      high: Math.round(actualNormalisedEBITDA * multiples.high),
       multipleLow: multiples.low,
       multipleHigh: multiples.high,
     };
 
     // Generate AI commentary
-    const aiPrompt = `You are an experienced business valuation expert. Analyze this business P&L normalization and provide a 2-3 paragraph commentary.
+    const aiPrompt = `You are an experienced business appraisal expert. Analyze this business P&L normalisation and provide a 2-3 paragraph commentary.
 
 Business Details:
 - Industry: ${businessDetails.industry}
 - Revenue: $${revenue.toLocaleString()}
 - Reported EBITDA: $${reportedEBITDA.toLocaleString()}
-- Normalized EBITDA: $${actualNormalizedEBITDA.toLocaleString()}
+- Normalised EBITDA: $${actualNormalisedEBITDA.toLocaleString()}
 - Total Addbacks: $${totalAddbacks.toLocaleString()}
 
 Key Addbacks:
@@ -319,7 +319,7 @@ ${benchmarkComparison.map((bc) => `- ${bc.metric}: ${bc.yourValue}% (industry av
 Provide commentary on:
 1. What looks strong about this business
 2. Any areas of concern or opportunity for improvement
-3. How the normalized EBITDA compares to industry standards
+3. How the normalised EBITDA compares to industry standards
 
 Be specific, practical, and constructive. Write in a professional but approachable tone.`;
 
@@ -335,7 +335,7 @@ Be specific, practical, and constructive. Write in a professional but approachab
     // Build result
     const result = {
       reportedEBITDA,
-      normalizedEBITDA: actualNormalizedEBITDA,
+      normalisedEBITDA: actualNormalisedEBITDA,
       totalAddbacks,
       reportedPL: {
         Revenue: revenue,
@@ -349,19 +349,19 @@ Be specific, practical, and constructive. Write in a professional but approachab
         Depreciation: depreciation,
         EBITDA: reportedEBITDA,
       },
-      normalizedPL: {
+      normalisedPL: {
         Revenue: revenue,
-        COGS: normalizedCOGS,
-        'Owner Salary': normalizedOwnerSalary,
-        'Staff Wages': normalizedStaffWages,
-        Rent: normalizedRent,
-        'Motor Vehicle': normalizedMotorVehicle,
-        'Other Expenses': normalizedOtherExpenses,
-        EBITDA: actualNormalizedEBITDA,
+        COGS: normalisedCOGS,
+        'Owner Salary': normalisedOwnerSalary,
+        'Staff Wages': normalisedStaffWages,
+        Rent: normalisedRent,
+        'Motor Vehicle': normalisedMotorVehicle,
+        'Other Expenses': normalisedOtherExpenses,
+        EBITDA: actualNormalisedEBITDA,
       },
       addbacks,
       benchmarkComparison,
-      valuationRange,
+      appraisalRange,
       aiCommentary,
     };
 

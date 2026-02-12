@@ -66,7 +66,7 @@ interface PLData {
   otherExpenses: { description: string; amount: string }[];
 }
 
-interface NormalizationAnswers {
+interface NormalisationAnswers {
   ownerHours: string;
   nonWorkingPayroll: string;
   ownPremises: string;
@@ -106,7 +106,7 @@ export default function NormalizePage() {
     otherExpenses: [],
   });
 
-  const [normalizationAnswers, setNormalizationAnswers] = useState<NormalizationAnswers>({
+  const [normalisationAnswers, setNormalisationAnswers] = useState<NormalisationAnswers>({
     ownerHours: '',
     nonWorkingPayroll: '',
     ownPremises: 'no',
@@ -135,7 +135,7 @@ export default function NormalizePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...contactData,
-          source: 'pnl_normalizer',
+          source: 'pnl_normaliser',
         }),
       });
 
@@ -181,42 +181,42 @@ export default function NormalizePage() {
   };
 
   const addPersonalExpense = () => {
-    setNormalizationAnswers({
-      ...normalizationAnswers,
-      personalExpenses: [...normalizationAnswers.personalExpenses, { description: '', amount: '' }],
+    setNormalisationAnswers({
+      ...normalisationAnswers,
+      personalExpenses: [...normalisationAnswers.personalExpenses, { description: '', amount: '' }],
     });
   };
 
   const updatePersonalExpense = (index: number, field: 'description' | 'amount', value: string) => {
-    const updated = [...normalizationAnswers.personalExpenses];
+    const updated = [...normalisationAnswers.personalExpenses];
     updated[index][field] = value;
-    setNormalizationAnswers({ ...normalizationAnswers, personalExpenses: updated });
+    setNormalisationAnswers({ ...normalisationAnswers, personalExpenses: updated });
   };
 
   const removePersonalExpense = (index: number) => {
-    const updated = normalizationAnswers.personalExpenses.filter((_, i) => i !== index);
-    setNormalizationAnswers({ ...normalizationAnswers, personalExpenses: updated });
+    const updated = normalisationAnswers.personalExpenses.filter((_, i) => i !== index);
+    setNormalisationAnswers({ ...normalisationAnswers, personalExpenses: updated });
   };
 
   const addOneOffCost = () => {
-    setNormalizationAnswers({
-      ...normalizationAnswers,
-      oneOffCosts: [...normalizationAnswers.oneOffCosts, { description: '', amount: '' }],
+    setNormalisationAnswers({
+      ...normalisationAnswers,
+      oneOffCosts: [...normalisationAnswers.oneOffCosts, { description: '', amount: '' }],
     });
   };
 
   const updateOneOffCost = (index: number, field: 'description' | 'amount', value: string) => {
-    const updated = [...normalizationAnswers.oneOffCosts];
+    const updated = [...normalisationAnswers.oneOffCosts];
     updated[index][field] = value;
-    setNormalizationAnswers({ ...normalizationAnswers, oneOffCosts: updated });
+    setNormalisationAnswers({ ...normalisationAnswers, oneOffCosts: updated });
   };
 
   const removeOneOffCost = (index: number) => {
-    const updated = normalizationAnswers.oneOffCosts.filter((_, i) => i !== index);
-    setNormalizationAnswers({ ...normalizationAnswers, oneOffCosts: updated });
+    const updated = normalisationAnswers.oneOffCosts.filter((_, i) => i !== index);
+    setNormalisationAnswers({ ...normalisationAnswers, oneOffCosts: updated });
   };
 
-  const handleNormalizationSubmit = async (e: React.FormEvent) => {
+  const handleNormalisationSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
@@ -229,13 +229,13 @@ export default function NormalizePage() {
           contactData,
           businessDetails,
           plData,
-          normalizationAnswers,
+          normalisationAnswers,
         }),
       });
 
       if (!res.ok) {
         const errData = await res.json();
-        throw new Error(errData.error || 'Failed to normalize P&L');
+        throw new Error(errData.error || 'Failed to normalise P&L');
       }
 
       const resultData = await res.json();
@@ -284,14 +284,14 @@ export default function NormalizePage() {
 
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
-            {step === 1 && 'P&L Normalizer'}
+            {step === 1 && 'P&L Normaliser'}
             {step === 2 && 'Business Details'}
             {step === 3 && 'Enter Your P&L'}
-            {step === 4 && 'Normalization Questions'}
-            {step === 5 && 'Your Normalized EBITDA'}
+            {step === 4 && 'Normalisation Questions'}
+            {step === 5 && 'Your Normalised EBITDA'}
           </h1>
           <p className="text-lg text-slate-400">
-            {step === 1 && 'Get a normalized EBITDA with industry benchmark comparison'}
+            {step === 1 && 'Get a normalised EBITDA with industry benchmark comparison'}
             {step === 2 && 'Tell us about your business'}
             {step === 3 && 'Enter your profit & loss line items'}
             {step === 4 && 'Help us identify addbacks and adjustments'}
@@ -580,9 +580,9 @@ export default function NormalizePage() {
           </form>
         )}
 
-        {/* Step 4: Normalization Questions */}
+        {/* Step 4: Normalisation Questions */}
         {step === 4 && (
-          <form onSubmit={handleNormalizationSubmit} className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+          <form onSubmit={handleNormalisationSubmit} className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
@@ -593,9 +593,9 @@ export default function NormalizePage() {
                   required
                   min="0"
                   max="168"
-                  value={normalizationAnswers.ownerHours}
+                  value={normalisationAnswers.ownerHours}
                   onChange={(e) =>
-                    setNormalizationAnswers({ ...normalizationAnswers, ownerHours: e.target.value })
+                    setNormalisationAnswers({ ...normalisationAnswers, ownerHours: e.target.value })
                   }
                   className="w-full px-4 py-3 bg-slate-900 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
                   placeholder="e.g. 50"
@@ -611,9 +611,9 @@ export default function NormalizePage() {
                 </label>
                 <input
                   type="text"
-                  value={normalizationAnswers.nonWorkingPayroll}
+                  value={normalisationAnswers.nonWorkingPayroll}
                   onChange={(e) =>
-                    setNormalizationAnswers({ ...normalizationAnswers, nonWorkingPayroll: e.target.value })
+                    setNormalisationAnswers({ ...normalisationAnswers, nonWorkingPayroll: e.target.value })
                   }
                   className="w-full px-4 py-3 bg-slate-900 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
                   placeholder="e.g. Spouse paid $30k but doesn't work in business"
@@ -625,9 +625,9 @@ export default function NormalizePage() {
                   Do you own the premises?
                 </label>
                 <select
-                  value={normalizationAnswers.ownPremises}
+                  value={normalisationAnswers.ownPremises}
                   onChange={(e) =>
-                    setNormalizationAnswers({ ...normalizationAnswers, ownPremises: e.target.value })
+                    setNormalisationAnswers({ ...normalisationAnswers, ownPremises: e.target.value })
                   }
                   className="w-full px-4 py-3 bg-slate-900 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
                 >
@@ -636,7 +636,7 @@ export default function NormalizePage() {
                 </select>
               </div>
 
-              {normalizationAnswers.ownPremises === 'yes' && (
+              {normalisationAnswers.ownPremises === 'yes' && (
                 <div>
                   <label className="block text-sm font-medium text-slate-300 mb-2">
                     What's the comparable market rent (annual)?
@@ -644,9 +644,9 @@ export default function NormalizePage() {
                   <input
                     type="number"
                     min="0"
-                    value={normalizationAnswers.marketRent}
+                    value={normalisationAnswers.marketRent}
                     onChange={(e) =>
-                      setNormalizationAnswers({ ...normalizationAnswers, marketRent: e.target.value })
+                      setNormalisationAnswers({ ...normalisationAnswers, marketRent: e.target.value })
                     }
                     className="w-full px-4 py-3 bg-slate-900 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
                     placeholder="e.g. 40000"
@@ -661,7 +661,7 @@ export default function NormalizePage() {
                 <p className="text-xs text-slate-400 mb-2">
                   e.g. personal car, phone, meals, travel, insurance
                 </p>
-                {normalizationAnswers.personalExpenses.map((expense, index) => (
+                {normalisationAnswers.personalExpenses.map((expense, index) => (
                   <div key={index} className="flex space-x-2 mb-2">
                     <input
                       type="text"
@@ -703,7 +703,7 @@ export default function NormalizePage() {
                 <p className="text-xs text-slate-400 mb-2">
                   e.g. legal fees, fitout, unusual repairs
                 </p>
-                {normalizationAnswers.oneOffCosts.map((cost, index) => (
+                {normalisationAnswers.oneOffCosts.map((cost, index) => (
                   <div key={index} className="flex space-x-2 mb-2">
                     <input
                       type="text"
@@ -743,10 +743,10 @@ export default function NormalizePage() {
                   Any related-party transactions above/below market rate?
                 </label>
                 <textarea
-                  value={normalizationAnswers.relatedPartyAdjustments}
+                  value={normalisationAnswers.relatedPartyAdjustments}
                   onChange={(e) =>
-                    setNormalizationAnswers({
-                      ...normalizationAnswers,
+                    setNormalisationAnswers({
+                      ...normalisationAnswers,
                       relatedPartyAdjustments: e.target.value,
                     })
                   }
@@ -779,9 +779,9 @@ export default function NormalizePage() {
         {/* Step 5: Results */}
         {step === 5 && result && (
           <div className="space-y-6">
-            {/* Normalized EBITDA Highlight */}
+            {/* Normalised EBITDA Highlight */}
             <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-8 border border-slate-700 text-center">
-              <p className="text-slate-400 mb-2">Your Normalized EBITDA:</p>
+              <p className="text-slate-400 mb-2">Your Normalised EBITDA:</p>
               <div className="text-5xl font-bold text-white mb-6">
                 {formatCurrency(result.normalizedEBITDA)}
               </div>
@@ -803,7 +803,7 @@ export default function NormalizePage() {
 
             {/* Side by Side P&L */}
             <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-              <h3 className="text-xl font-semibold text-white mb-4">Reported vs Normalized P&L</h3>
+              <h3 className="text-xl font-semibold text-white mb-4">Reported vs Normalised P&L</h3>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <h4 className="text-cyan-400 font-semibold mb-3">Reported</h4>
@@ -875,15 +875,15 @@ export default function NormalizePage() {
               </div>
             )}
 
-            {/* Valuation Range */}
-            {result.valuationRange && (
+            {/* Appraisal Range */}
+            {result.appraisalRange && (
               <div className="bg-gradient-to-br from-purple-500/10 to-cyan-500/10 rounded-xl p-6 border border-purple-500/30">
-                <h3 className="text-xl font-semibold text-white mb-2">Indicative Valuation Range</h3>
+                <h3 className="text-xl font-semibold text-white mb-2">Indicative Appraisal Range</h3>
                 <p className="text-slate-400 text-sm mb-4">
-                  Based on {result.valuationRange.multipleLow}x - {result.valuationRange.multipleHigh}x EBITDA
+                  Based on {result.appraisalRange.multipleLow}x - {result.appraisalRange.multipleHigh}x EBITDA
                 </p>
                 <div className="text-3xl font-bold text-white">
-                  {formatCurrency(result.valuationRange.low)} - {formatCurrency(result.valuationRange.high)}
+                  {formatCurrency(result.appraisalRange.low)} - {formatCurrency(result.appraisalRange.high)}
                 </div>
               </div>
             )}
