@@ -83,18 +83,24 @@ export default function HomePage() {
               },
               {
                 num: "3",
-                icon: "🚀",
-                title: "Distribute Everywhere",
-                desc: "One click syndicates your listing to SEEK Business, BizBuySell, Commercial Real Estate, and more. AI writes optimised ads for each platform.",
+                icon: "📋",
+                title: "Create Your Listing",
+                desc: "AI generates a compelling public listing with optimised copy for each platform. You review and approve before anything goes live.",
               },
               {
                 num: "4",
+                icon: "🚀",
+                title: "Distribute Everywhere",
+                desc: "One click syndicates your listing to SEEK Business, BizBuySell, Commercial Real Estate, and more. Your IM stays private — only the listing goes public.",
+              },
+              {
+                num: "5",
                 icon: "🔐",
                 title: "Manage Buyers Securely",
                 desc: "Send NDAs, grant password-protected IM access, track who\u2019s viewing what sections, and auto-chase unresponsive buyers.",
               },
               {
-                num: "5",
+                num: "6",
                 icon: "🤝",
                 title: "Close the Deal",
                 desc: "Review buyer notes, manage negotiations in the deal room, and get real-time analytics on buyer engagement.",
@@ -224,7 +230,7 @@ export default function HomePage() {
                   "NDA management",
                   "AI ad generation for each platform",
                   "P&L normalisation & benchmarking",
-                  "Full control, flat fee from $499",
+                  "Full control, flat fee from $199",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-2">
                     <span className="text-green-400 mt-0.5">✓</span>
@@ -250,11 +256,15 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-8">
             {/* Starter */}
             <div className="bg-slate-800/50 border border-slate-700/60 rounded-2xl p-8 flex flex-col">
-              <h3 className="text-lg font-semibold text-slate-200 mb-1">Starter</h3>
-              <div className="text-4xl font-extrabold mb-1">
-                $499
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="text-lg font-semibold text-slate-200">Starter</h3>
+                <span className="text-xs font-bold text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full">EARLY ADOPTER</span>
               </div>
-              <p className="text-slate-500 text-sm mb-6">One-time fee</p>
+              <div className="flex items-baseline gap-2 mb-1">
+                <span className="text-4xl font-extrabold">$199</span>
+                <span className="text-lg text-slate-500 line-through">$499</span>
+              </div>
+              <p className="text-slate-500 text-sm mb-6">One-time fee · Limited time</p>
               <ul className="space-y-3 text-slate-300 text-sm mb-8 flex-1">
                 {[
                   "AI business appraisal",
@@ -310,11 +320,15 @@ export default function HomePage() {
 
             {/* Premium */}
             <div className="bg-slate-800/50 border border-slate-700/60 rounded-2xl p-8 flex flex-col">
-              <h3 className="text-lg font-semibold text-slate-200 mb-1">Premium</h3>
-              <div className="text-4xl font-extrabold mb-1">
-                $1,999
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="text-lg font-semibold text-slate-200">Premium</h3>
+                <span className="text-xs font-bold text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full">EARLY ADOPTER</span>
               </div>
-              <p className="text-slate-500 text-sm mb-6">One-time fee</p>
+              <div className="flex items-baseline gap-2 mb-1">
+                <span className="text-4xl font-extrabold">$899</span>
+                <span className="text-lg text-slate-500 line-through">$1,999</span>
+              </div>
+              <p className="text-slate-500 text-sm mb-6">One-time fee · Limited time</p>
               <ul className="space-y-3 text-slate-300 text-sm mb-8 flex-1">
                 {[
                   "Everything in Professional",
