@@ -320,15 +320,11 @@ export default function HomePage() {
 
             {/* Premium */}
             <div className="bg-slate-800/50 border border-slate-700/60 rounded-2xl p-8 flex flex-col">
-              <div className="flex items-center gap-2 mb-1">
-                <h3 className="text-lg font-semibold text-slate-200">Premium</h3>
-                <span className="text-xs font-bold text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full">EARLY ADOPTER</span>
+              <h3 className="text-lg font-semibold text-slate-200 mb-1">Premium</h3>
+              <div className="text-4xl font-extrabold mb-1">
+                $1,999
               </div>
-              <div className="flex items-baseline gap-2 mb-1">
-                <span className="text-4xl font-extrabold">$899</span>
-                <span className="text-lg text-slate-500 line-through">$1,999</span>
-              </div>
-              <p className="text-slate-500 text-sm mb-6">One-time fee · Limited time</p>
+              <p className="text-slate-500 text-sm mb-6">One-time fee</p>
               <ul className="space-y-3 text-slate-300 text-sm mb-8 flex-1">
                 {[
                   "Everything in Professional",
