@@ -67,7 +67,7 @@ export default function HomePage() {
             Five simple steps from appraisal to sold — with AI doing the heavy lifting.
           </p>
 
-          <div className="space-y-12 md:space-y-0 md:grid md:grid-cols-5 md:gap-4">
+          <div className="space-y-12 md:space-y-0 md:grid md:grid-cols-3 md:gap-8">
             {[
               {
                 num: "1",

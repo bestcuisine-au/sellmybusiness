@@ -122,8 +122,166 @@ function BuyerGate({ businessId, businessName, onVerified }: { businessId: strin
   );
 }
 
+// ─── Website Import Modal ───
+function WebsiteImportModal({
+  businessId,
+  onSuccess,
+  onClose,
+}: {
+  businessId: string;
+  onSuccess: () => void;
+  onClose: () => void;
+}) {
+  const [url, setUrl] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [result, setResult] = useState<{ sectionsGenerated: number; message: string } | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    setResult(null);
+
+    // Auto-prepend https:// if missing
+    let finalUrl = url.trim();
+    if (finalUrl && !finalUrl.startsWith("http://") && !finalUrl.startsWith("https://")) {
+      finalUrl = "https://" + finalUrl;
+    }
+
+    try {
+      const res = await fetch("/api/im/scrape-website", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ businessId, url: finalUrl }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Failed to import from website");
+      } else {
+        setResult({ sectionsGenerated: data.sectionsGenerated, message: data.message });
+        // Refresh sections after a short delay
+        setTimeout(() => {
+          onSuccess();
+          onClose();
+        }, 2000);
+      }
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center px-4">
+      <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full p-6 relative">
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+          aria-label="Close"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        <div className="text-center mb-6">
+          <div className="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-3">
+            <span className="text-2xl">🌐</span>
+          </div>
+          <h3 className="text-xl font-bold text-gray-900">Import from Website</h3>
+          <p className="text-gray-500 text-sm mt-1">
+            We&apos;ll scan your business website and pre-populate your IM sections
+          </p>
+        </div>
+
+        {result ? (
+          <div className="text-center py-4">
+            <div className="text-4xl mb-3">✨</div>
+            <p className="text-lg font-medium text-gray-900">
+              We found content from your website!
+            </p>
+            <p className="text-gray-500 text-sm mt-2">
+              {result.message}
+            </p>
+            <p className="text-[#2e7847] text-sm mt-1 font-medium">
+              Review and customise each section.
+            </p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit}>
+            <div className="mb-4">
+              <label htmlFor="website-url" className="block text-sm font-medium text-gray-700 mb-1">
+                Website URL
+              </label>
+              <input
+                ref={inputRef}
+                id="website-url"
+                type="text"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder="www.yourbusiness.com.au"
+                required
+                disabled={loading}
+                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-[#2e7847] focus:ring-2 focus:ring-[#2e7847]/20 outline-none text-gray-900 disabled:bg-gray-50"
+              />
+            </div>
+
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-100 rounded-lg">
+                <p className="text-red-600 text-sm">{error}</p>
+              </div>
+            )}
+
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={onClose}
+                disabled={loading}
+                className="flex-1 px-4 py-3 border border-gray-200 text-gray-600 rounded-lg font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={loading || !url.trim()}
+                className="flex-1 px-4 py-3 bg-[#2e7847] text-white rounded-lg font-medium hover:bg-[#245f39] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {loading ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    Scanning...
+                  </>
+                ) : (
+                  "🌐 Import"
+                )}
+              </button>
+            </div>
+
+            {loading && (
+              <p className="text-xs text-gray-400 text-center mt-3">
+                This may take 15–30 seconds while we scan and generate content...
+              </p>
+            )}
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── Completion Bar ───
-function CompletionBar({ sections }: { sections: Section[] }) {
+function CompletionBar({ sections, onImportWebsite }: { sections: Section[]; onImportWebsite: () => void }) {
   const filled = sections.filter((s) => s.content && s.content.trim().length > 0).length;
   const total = SECTION_DEFS.length;
   const pct = Math.round((filled / total) * 100);
@@ -140,6 +298,13 @@ function CompletionBar({ sections }: { sections: Section[] }) {
         </div>
         <span className="text-sm font-bold text-[#2e7847]">{pct}%</span>
         <span className="text-xs text-gray-400">({filled}/{total} sections)</span>
+        <button
+          onClick={onImportWebsite}
+          className="ml-2 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-100 transition-colors flex items-center gap-1.5 whitespace-nowrap"
+          title="Import content from your business website"
+        >
+          🌐 Import from Website
+        </button>
       </div>
     </div>
   );
@@ -164,7 +329,7 @@ function SectionEditor({
   const [editing, setEditing] = useState(false);
   const [content, setContent] = useState(section.content || "");
   const [title, setTitle] = useState(section.title || def.title);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const saveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -334,11 +499,43 @@ export default function IMClient({ business, initialSections, isOwner }: IMClien
   const [buyerEmail, setBuyerEmail] = useState<string | null>(null);
   const [aiLoading, setAiLoading] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<"saved" | "saving" | "error">("saved");
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [importToast, setImportToast] = useState(false);
 
   // If not owner and not verified, show gate
   if (!isOwner && !buyerEmail) {
     return <BuyerGate businessId={business.id} businessName={business.name} onVerified={setBuyerEmail} />;
   }
+
+  const refreshSections = async () => {
+    try {
+      const res = await fetch(`/api/im/sections?businessId=${business.id}`);
+      const data = await res.json();
+      if (res.ok && data.sections) {
+        setSections(
+          SECTION_DEFS.map((def, i) => {
+            const existing = data.sections.find((s: Section) => s.sectionType === def.type);
+            return existing || {
+              sectionType: def.type,
+              title: def.title,
+              content: null,
+              order: i,
+              mediaUrls: [],
+              isVisible: true,
+            };
+          })
+        );
+      }
+    } catch (err) {
+      console.error("Failed to refresh sections:", err);
+    }
+  };
+
+  const handleImportSuccess = () => {
+    refreshSections();
+    setImportToast(true);
+    setTimeout(() => setImportToast(false), 5000);
+  };
 
   const handleSave = async (sectionType: string, content: string, title: string) => {
     setSaveStatus("saving");
@@ -436,7 +633,35 @@ export default function IMClient({ business, initialSections, isOwner }: IMClien
     <div className="min-h-screen bg-white im-document">
       {/* Owner toolbar */}
       {isOwner && (
-        <CompletionBar sections={sections} />
+        <CompletionBar sections={sections} onImportWebsite={() => setShowImportModal(true)} />
+      )}
+
+      {/* Website Import Modal */}
+      {showImportModal && (
+        <WebsiteImportModal
+          businessId={business.id}
+          onSuccess={handleImportSuccess}
+          onClose={() => setShowImportModal(false)}
+        />
+      )}
+
+      {/* Import Success Toast */}
+      {importToast && (
+        <div className="fixed bottom-6 right-6 z-50 animate-in slide-in-from-bottom-4">
+          <div className="bg-white border border-green-200 shadow-lg rounded-xl px-5 py-4 flex items-center gap-3 max-w-sm">
+            <span className="text-2xl">✨</span>
+            <div>
+              <p className="text-sm font-medium text-gray-900">Content imported!</p>
+              <p className="text-xs text-gray-500">Review and customise each section.</p>
+            </div>
+            <button
+              onClick={() => setImportToast(false)}
+              className="text-gray-400 hover:text-gray-600 ml-2"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
       )}
 
       {/* Hero header */}
