@@ -319,6 +319,316 @@ function DigitalPresenceBuyerView({ data }: { data: DigitalPresenceData }) {
   );
 }
 
+// ──── ABN Lookup Panel (Owner View) ────
+interface ABNDetails {
+  abn: string;
+  entityName: string;
+  entityType: string;
+  status: string;
+  gstRegistered: boolean;
+  gstDate: string | null;
+  businessNames: string[];
+  state: string;
+  postcode: string;
+  registrationDate: string;
+  lookedUpAt: string;
+}
+
+function ABNLookupPanel({
+  businessId,
+  abnData,
+  onDataUpdate,
+}: {
+  businessId: string;
+  abnData: ABNDetails | null;
+  onDataUpdate: (data: ABNDetails) => void;
+}) {
+  const [abn, setAbn] = useState("");
+  const [looking, setLooking] = useState(false);
+  const [error, setError] = useState("");
+  const [showForm, setShowForm] = useState(!abnData);
+
+  const handleLookup = async () => {
+    if (!abn.trim()) {
+      setError("Please enter an ABN");
+      return;
+    }
+
+    // Validate ABN (11 digits)
+    const abnDigits = abn.replace(/\s/g, "");
+    if (!/^\d{11}$/.test(abnDigits)) {
+      setError("ABN must be 11 digits");
+      return;
+    }
+
+    setLooking(true);
+    setError("");
+
+    try {
+      const res = await fetch("/api/im/abn-lookup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ businessId, abn }),
+      });
+
+      const result = await res.json();
+      if (!res.ok) {
+        setError(result.error || "Lookup failed");
+        return;
+      }
+
+      onDataUpdate(result.data);
+      setShowForm(false);
+    } catch {
+      setError("Failed to lookup ABN. Please try again.");
+    } finally {
+      setLooking(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Lookup section */}
+      {showForm && (
+        <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border border-green-100">
+          <div className="flex items-center gap-3 mb-4">
+            <span className="text-2xl">🔍</span>
+            <div>
+              <h3 className="font-bold text-gray-900">ABN Lookup</h3>
+              <p className="text-sm text-gray-500">
+                Automatically retrieve your business details from the Australian Business Register
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-end gap-3">
+            <div className="flex-1 min-w-[200px]">
+              <label className="block text-xs font-medium text-gray-600 mb-1">
+                Australian Business Number (ABN)
+              </label>
+              <input
+                type="text"
+                value={abn}
+                onChange={(e) => setAbn(e.target.value)}
+                placeholder="51 824 753 556"
+                className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#2e7847] focus:ring-2 focus:ring-[#2e7847]/20 outline-none text-gray-900"
+              />
+            </div>
+            <button
+              onClick={handleLookup}
+              disabled={looking}
+              className="px-6 py-2.5 bg-[#2e7847] text-white rounded-lg font-medium hover:bg-[#245f39] transition-colors disabled:opacity-50 flex items-center gap-2"
+            >
+              {looking ? (
+                <>
+                  <span className="animate-spin">⏳</span> Looking up ABN...
+                </>
+              ) : (
+                <>🔍 Look Up ABN</>
+              )}
+            </button>
+            {abnData && (
+              <button
+                onClick={() => setShowForm(false)}
+                className="px-6 py-2.5 bg-white border border-gray-200 text-gray-600 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+            )}
+          </div>
+
+          {error && (
+            <p className="text-red-600 text-sm mt-3 bg-red-50 px-3 py-2 rounded-lg">{error}</p>
+          )}
+        </div>
+      )}
+
+      {/* Display ABN details */}
+      {abnData && !showForm && (
+        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <div className="bg-gradient-to-r from-[#2e7847] to-[#3d9a5d] px-6 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-3 text-white">
+              <span className="text-2xl">🏢</span>
+              <div>
+                <h3 className="font-bold text-lg">{abnData.entityName}</h3>
+                <p className="text-sm text-green-100">ABN: {abnData.abn}</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowForm(true)}
+              className="text-sm text-white hover:bg-white/20 px-3 py-1.5 rounded-lg flex items-center gap-1 transition-colors"
+            >
+              🔄 Refresh
+            </button>
+          </div>
+
+          <div className="p-6 space-y-4">
+            {/* Status Badge */}
+            <div className="flex items-center gap-6 flex-wrap">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-medium text-gray-500">Status:</span>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1 ${
+                    abnData.status === "Active"
+                      ? "bg-green-100 text-green-800"
+                      : "bg-red-100 text-red-800"
+                  }`}
+                >
+                  {abnData.status === "Active" ? "🟢" : "🔴"} {abnData.status}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-medium text-gray-500">GST:</span>
+                {abnData.gstRegistered ? (
+                  <span className="px-3 py-1 bg-green-50 text-green-700 rounded-full text-sm font-medium flex items-center gap-1">
+                    ✅ Registered {abnData.gstDate && `since ${abnData.gstDate}`}
+                  </span>
+                ) : (
+                  <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm font-medium flex items-center gap-1">
+                    ❌ Not registered
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Entity Details */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-gray-100">
+              <div>
+                <p className="text-xs font-medium text-gray-500 mb-1">Entity Type</p>
+                <p className="text-sm text-gray-900 font-medium">{abnData.entityType}</p>
+              </div>
+              <div>
+                <p className="text-xs font-medium text-gray-500 mb-1">Registration Date</p>
+                <p className="text-sm text-gray-900 font-medium">{abnData.registrationDate}</p>
+              </div>
+              {abnData.state && (
+                <div>
+                  <p className="text-xs font-medium text-gray-500 mb-1">Location</p>
+                  <p className="text-sm text-gray-900 font-medium">
+                    {abnData.state} {abnData.postcode}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Trading Names */}
+            {abnData.businessNames && abnData.businessNames.length > 0 && (
+              <div className="pt-4 border-t border-gray-100">
+                <p className="text-xs font-medium text-gray-500 mb-2">Trading Names</p>
+                <div className="flex flex-wrap gap-2">
+                  {abnData.businessNames.map((name, i) => (
+                    <span
+                      key={i}
+                      className="px-3 py-1 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium"
+                    >
+                      {name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Last updated */}
+            <div className="pt-4 border-t border-gray-100">
+              <p className="text-xs text-gray-400">
+                Details retrieved from Australian Business Register on{" "}
+                {new Date(abnData.lookedUpAt).toLocaleString("en-AU")}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ──── ABN Lookup Panel (Buyer View) ────
+function ABNBuyerView({ abnData }: { abnData: ABNDetails | null }) {
+  if (!abnData) return null;
+
+  return (
+    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className="bg-gradient-to-r from-[#2e7847] to-[#3d9a5d] px-6 py-4">
+        <div className="flex items-center gap-3 text-white">
+          <span className="text-2xl">🏢</span>
+          <div>
+            <h3 className="font-bold text-lg">{abnData.entityName}</h3>
+            <p className="text-sm text-green-100">ABN: {abnData.abn}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="p-6 space-y-4">
+        {/* Status Badge */}
+        <div className="flex items-center gap-6 flex-wrap">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-medium text-gray-500">Status:</span>
+            <span
+              className={`px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1 ${
+                abnData.status === "Active"
+                  ? "bg-green-100 text-green-800"
+                  : "bg-red-100 text-red-800"
+              }`}
+            >
+              {abnData.status === "Active" ? "🟢" : "🔴"} {abnData.status}
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-medium text-gray-500">GST:</span>
+            {abnData.gstRegistered ? (
+              <span className="px-3 py-1 bg-green-50 text-green-700 rounded-full text-sm font-medium flex items-center gap-1">
+                ✅ Registered {abnData.gstDate && `since ${abnData.gstDate}`}
+              </span>
+            ) : (
+              <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm font-medium flex items-center gap-1">
+                ❌ Not registered
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Entity Details */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-gray-100">
+          <div>
+            <p className="text-xs font-medium text-gray-500 mb-1">Entity Type</p>
+            <p className="text-sm text-gray-900 font-medium">{abnData.entityType}</p>
+          </div>
+          <div>
+            <p className="text-xs font-medium text-gray-500 mb-1">Registration Date</p>
+            <p className="text-sm text-gray-900 font-medium">{abnData.registrationDate}</p>
+          </div>
+          {abnData.state && (
+            <div>
+              <p className="text-xs font-medium text-gray-500 mb-1">Location</p>
+              <p className="text-sm text-gray-900 font-medium">
+                {abnData.state} {abnData.postcode}
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Trading Names */}
+        {abnData.businessNames && abnData.businessNames.length > 0 && (
+          <div className="pt-4 border-t border-gray-100">
+            <p className="text-xs font-medium text-gray-500 mb-2">Trading Names</p>
+            <div className="flex flex-wrap gap-2">
+              {abnData.businessNames.map((name, i) => (
+                <span
+                  key={i}
+                  className="px-3 py-1 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium"
+                >
+                  {name}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+
 // ──── Industry Overview Panel (Owner View) ────
 function IndustryOverviewPanel({
   businessId,
@@ -570,6 +880,7 @@ const SECTION_DEFS = [
   { type: "gallery", title: "Photo Gallery", icon: "📸", placeholder: "Click to add photos of the business..." },
   { type: "videos", title: "Videos", icon: "🎥", placeholder: "Add videos to showcase your business..." },
   { type: "digital-presence", title: "Digital Presence", icon: "📸", placeholder: "Capture website and social media presence..." },
+  { type: "abn-details", title: "ABN Details", icon: "🔍", placeholder: "Look up business details from ABR..." },
   { type: "industry-overview", title: "Industry Overview", icon: "📊", placeholder: "Generate AI-powered market analysis..." },
 ];
 
@@ -1548,6 +1859,42 @@ function SectionEditor({
             <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
           </div>
           <DigitalPresenceBuyerView data={digitalPresenceData} />
+        </section>
+      );
+    }
+  }
+
+
+  // ─── ABN Details section ───
+  if (def.type === "abn-details") {
+    const abnData = content ? (JSON.parse(content) as ABNDetails) : null;
+    
+    if (showEdit) {
+      return (
+        <section className="py-10 border-b border-gray-100 last:border-b-0 group relative">
+          <div className="flex items-center gap-3 mb-6">
+            <span className="text-2xl">{def.icon}</span>
+            <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
+          </div>
+          <ABNLookupPanel
+            businessId={business.id}
+            abnData={abnData}
+            onDataUpdate={(data) => {
+              onSave("abn-details", JSON.stringify(data), title);
+            }}
+          />
+        </section>
+      );
+    } else {
+      // Buyer view
+      if (!abnData) return null;
+      return (
+        <section className="py-10 border-b border-gray-100 last:border-b-0">
+          <div className="flex items-center gap-3 mb-4">
+            <span className="text-2xl">{def.icon}</span>
+            <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
+          </div>
+          <ABNBuyerView abnData={abnData} />
         </section>
       );
     }
