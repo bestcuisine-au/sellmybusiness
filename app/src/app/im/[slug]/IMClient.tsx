@@ -886,7 +886,7 @@ const SECTION_DEFS = [
 
 
 // ─── Section Guidance (Seller-only coaching notes) ───
-const SECTION_GUIDANCE = {
+const SECTION_GUIDANCE: Record<string, { why: string; include: string; tip: string }> = {
   overview: {
     why: "The overview is the first thing buyers read. A strong overview creates excitement and sets the tone for the entire IM. Weak overviews lose buyers immediately.",
     include: "Your unique story — what makes this business special, key achievements, competitive advantages, and why it's a great opportunity.",
@@ -905,7 +905,7 @@ const SECTION_GUIDANCE = {
   growth: {
     why: "Buyers aren't just buying today's business — they're buying its potential. Growth opportunities can justify a higher price.",
     include: "Realistic, specific opportunities you've identified but haven't pursued. Why haven't you done them? What investment would they need?",
-    tip: "Be specific and realistic. "Could expand interstate" is vague. "A second location in [suburb] could add $200K revenue based on local demand" is compelling."
+    tip: "Be specific and realistic. \"Could expand interstate\" is vague. \"A second location in [suburb] could add $200K revenue based on local demand\" is compelling."
   },
   assets: {
     why: "Buyers want to know exactly what's included in the sale — and the condition and value of those assets.",
@@ -929,12 +929,12 @@ const SECTION_GUIDANCE = {
   },
   "digital-presence": {
     why: "A strong online presence adds value. Buyers see a business with active socials and good reviews as lower risk.",
-    include: "Click "Capture" to automatically screenshot your website and detect social media profiles.",
+    include: "Click the Capture button to automatically screenshot your website and detect social media profiles.",
     tip: "If your online presence is weak, consider improving it before listing. Even basic improvements (Google Business profile, active Facebook page) can impact buyer perception."
   },
   "industry-overview": {
     why: "Buyers want market context — is this industry growing? Is the local area booming? This section positions your business within the broader opportunity.",
-    include: "Click "Generate" to auto-create a market analysis based on your industry and location.",
+    include: "Click the Generate button to auto-create a market analysis based on your industry and location.",
     tip: "This auto-generated analysis gives buyers confidence that they're entering a healthy market. Review it for accuracy."
   },
   "abn-details": {
