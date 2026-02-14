@@ -884,6 +884,71 @@ const SECTION_DEFS = [
   { type: "industry-overview", title: "Industry Overview", icon: "📊", placeholder: "Generate AI-powered market analysis..." },
 ];
 
+
+// ─── Section Guidance (Seller-only coaching notes) ───
+const SECTION_GUIDANCE = {
+  overview: {
+    why: "The overview is the first thing buyers read. A strong overview creates excitement and sets the tone for the entire IM. Weak overviews lose buyers immediately.",
+    include: "Your unique story — what makes this business special, key achievements, competitive advantages, and why it's a great opportunity.",
+    tip: "Lead with your strongest selling point. If you have impressive revenue growth, loyal customers, or a prime location — say it upfront."
+  },
+  operations: {
+    why: "Buyers need to understand how the business actually runs day-to-day. They're assessing whether they can step in and operate it successfully.",
+    include: "Operating hours, key processes, systems used (POS, booking, inventory), supplier relationships, and what a typical day/week looks like.",
+    tip: "The easier you make it look to run, the more attractive it is. Document your systems — a well-systemised business commands a premium."
+  },
+  financials: {
+    why: "This is the section buyers scrutinise most. Strong, transparent financials build trust and justify your asking price.",
+    include: "Revenue, expenses, profit margins, and any add-backs that normalise the true earning capacity. Upload your P&L for automatic analysis.",
+    tip: "Be upfront about add-backs (personal expenses, one-off costs, owner's salary above market rate). Buyers respect transparency — and it increases your normalised profit."
+  },
+  growth: {
+    why: "Buyers aren't just buying today's business — they're buying its potential. Growth opportunities can justify a higher price.",
+    include: "Realistic, specific opportunities you've identified but haven't pursued. Why haven't you done them? What investment would they need?",
+    tip: "Be specific and realistic. "Could expand interstate" is vague. "A second location in [suburb] could add $200K revenue based on local demand" is compelling."
+  },
+  assets: {
+    why: "Buyers want to know exactly what's included in the sale — and the condition and value of those assets.",
+    include: "Every significant piece of equipment, furniture, vehicle, and fixture. Include approximate age, condition, and estimated replacement value.",
+    tip: "A detailed asset list builds buyer confidence. Missing assets create doubt and can derail negotiations late in the process."
+  },
+  staff: {
+    why: "Buyers need to know if the team will stay post-sale, who's critical, and what the wage bill looks like.",
+    include: "Number of staff, roles, full-time/part-time/casual split, approximate tenure, and key person dependencies.",
+    tip: "If the business can run without you, say so clearly. Owner-dependent businesses are harder to sell and attract lower multiples."
+  },
+  lease: {
+    why: "For many businesses, the lease is the single most critical factor. A poor lease can kill a deal entirely.",
+    include: "Lease term, options, annual rent, outgoings, rent review method, assignment clause, and any make-good obligations.",
+    tip: "Buyers want long remaining terms (5+ years including options). If your lease is short, consider negotiating an extension before listing — it can add significant value."
+  },
+  gallery: {
+    why: "Photos sell businesses. Listings with professional photos get 3x more enquiries than those without.",
+    include: "Exterior, interior, equipment, products/services in action, team (if they consent). Minimum 6-10 photos.",
+    tip: "Clean, well-lit photos on a quiet day. No clutter, no customers visible (privacy). First photo should be your hero shot — the one that makes buyers want to learn more."
+  },
+  "digital-presence": {
+    why: "A strong online presence adds value. Buyers see a business with active socials and good reviews as lower risk.",
+    include: "Click "Capture" to automatically screenshot your website and detect social media profiles.",
+    tip: "If your online presence is weak, consider improving it before listing. Even basic improvements (Google Business profile, active Facebook page) can impact buyer perception."
+  },
+  "industry-overview": {
+    why: "Buyers want market context — is this industry growing? Is the local area booming? This section positions your business within the broader opportunity.",
+    include: "Click "Generate" to auto-create a market analysis based on your industry and location.",
+    tip: "This auto-generated analysis gives buyers confidence that they're entering a healthy market. Review it for accuracy."
+  },
+  "abn-details": {
+    why: "Verified business registration details build immediate trust with buyers and confirm the business is legitimate and active.",
+    include: "Enter your ABN to auto-populate your business registration details from the Australian Business Register.",
+    tip: "An active ABN with GST registration shows buyers this is an established, compliant business."
+  },
+  videos: {
+    why: "Video walkthroughs dramatically increase buyer engagement. Listings with video get 2-4x more serious enquiries.",
+    include: "A walkthrough of the business, customer testimonials (with permission), or a brief owner introduction explaining the opportunity.",
+    tip: "Keep it under 3 minutes. A smartphone video is fine — authenticity beats production quality. Don't show customers' faces or anything commercially sensitive."
+  }
+};
+
 function formatCurrency(val: number | null): string {
   if (!val && val !== 0) return "";
   return new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 }).format(val);
@@ -1765,6 +1830,16 @@ function SectionEditor({
       </section>
     );
   }
+        {/* Seller-only guidance notes */}
+        {isOwner && !previewMode && SECTION_GUIDANCE[section.sectionType] && (
+          <div className="bg-amber-50 border-l-4 border-amber-400 p-4 mb-6 rounded-r-lg text-sm">
+            <p className="text-gray-700 mb-2"><strong>💡 Why this matters:</strong> {SECTION_GUIDANCE[section.sectionType].why}</p>
+            <p className="text-gray-700 mb-2"><strong>📋 What to include:</strong> {SECTION_GUIDANCE[section.sectionType].include}</p>
+            <p className="text-gray-700"><strong>⭐ Tip:</strong> {SECTION_GUIDANCE[section.sectionType].tip}</p>
+          </div>
+        )}
+
+
 
   // ─── Financial section: Owner with structured data ───
   if (def.type === "financials" && showEdit) {
