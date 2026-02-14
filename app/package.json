@@ -19,6 +19,7 @@
     "openai": "^6.18.0",
     "pdf-parse": "^2.4.5",
     "prisma": "^6.19.2",
+    "puppeteer-core": "^24.37.3",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-markdown": "^10.1.0",
