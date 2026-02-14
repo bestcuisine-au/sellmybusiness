@@ -111,7 +111,9 @@ export async function POST(req: NextRequest) {
         const getOG = (property: string): string | undefined => {
           const match = html.match(new RegExp(`<meta[^>]*(?:property|name)=["']${property}["'][^>]*content=["']([^"']*)["']`, 'i'))
             || html.match(new RegExp(`<meta[^>]*content=["']([^"']*)["'][^>]*(?:property|name)=["']${property}["']`, 'i'));
-          return match?.[1];
+          return match?.[1]?.replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
+            .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => String.fromCharCode(parseInt(h, 16)))
+            .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'");
         };
         socialProfiles[platform] = {
           name: getOG('og:title') || getOG('og:site_name') || platform,
