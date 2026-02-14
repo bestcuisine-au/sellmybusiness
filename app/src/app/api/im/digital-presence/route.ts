@@ -61,7 +61,14 @@ export async function POST(req: NextRequest) {
     // Desktop screenshot
     await page.setViewport({ width: 1280, height: 900 });
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
-    const desktopScreenshot = await page.screenshot({ encoding: 'base64', type: 'jpeg', quality: 80 });
+    // Dismiss cookie banners before capture
+    await page.evaluate(() => {
+      const sels = ['[class*="cookie"] button','[class*="consent"] button','[class*="Cookie"] button','[class*="Accept"] button','.cc-btn','#onetrust-accept-btn-handler'];
+      for (const s of sels) { const b = document.querySelector(s) as HTMLElement; if (b) { b.click(); break; } }
+      document.querySelectorAll('[class*="cookie"],[class*="consent"],[id*="cookie"]').forEach(e => (e as HTMLElement).style.display = 'none');
+    });
+    await new Promise(r => setTimeout(r, 1000));
+    const desktopScreenshot = await page.screenshot({ encoding: 'base64', type: 'jpeg', quality: 80, fullPage: true });
     
     // Extract social media links
     const socialLinks = await page.evaluate(() => {
@@ -92,19 +99,8 @@ export async function POST(req: NextRequest) {
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
     const mobileScreenshot = await page.screenshot({ encoding: 'base64', type: 'jpeg', quality: 80 });
 
-    // Screenshot each social media profile
+    // Social media profile screenshots skipped - FB/IG block headless browsers
     const socialScreenshots: Record<string, string> = {};
-    for (const [platform, socialUrl] of Object.entries(socialLinks)) {
-      try {
-        await page.setViewport({ width: 1280, height: 900 });
-        await page.goto(socialUrl, { waitUntil: 'networkidle2', timeout: 15000 });
-        await new Promise(r => setTimeout(r, 2000));
-        const screenshot = await page.screenshot({ encoding: 'base64', type: 'jpeg', quality: 80 });
-        socialScreenshots[platform] = screenshot;
-      } catch (e) {
-        console.error(`Failed to screenshot ${platform}:`, e);
-      }
-    }
 
     await browser.close();
 
