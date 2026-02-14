@@ -4,13 +4,29 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
 
+      {/* ═══════════ NAVIGATION ═══════════ */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/50">
+        <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
+          <a href="/" className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-green-400 bg-clip-text text-transparent">
+            OwnerExit.ai
+          </a>
+          <div className="flex items-center gap-6">
+            <a href="#how-it-works" className="text-sm text-slate-400 hover:text-white transition hidden sm:inline">How It Works</a>
+            <a href="#pricing" className="text-sm text-slate-400 hover:text-white transition hidden sm:inline">Pricing</a>
+            <a href="/price-guide" className="text-sm text-slate-400 hover:text-white transition hidden sm:inline">Free Appraisal</a>
+            <a href="/login" className="text-sm px-4 py-2 rounded-lg border border-slate-600 text-white hover:border-cyan-400 transition">Log In</a>
+            <a href="/signup" className="text-sm px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-green-500 text-white font-medium hover:opacity-90 transition">Sign Up</a>
+          </div>
+        </div>
+      </nav>
+
       {/* ═══════════ HERO ═══════════ */}
       <section className="relative overflow-hidden">
         {/* Decorative blobs */}
         <div className="absolute -top-40 -left-40 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl" />
         <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-green-500/10 rounded-full blur-3xl" />
 
-        <div className="relative max-w-6xl mx-auto px-6 pt-32 pb-24 text-center">
+        <div className="relative max-w-6xl mx-auto px-6 pt-40 pb-24 text-center">
           <h1 className="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
             Sell Your Business Like a Pro
             <br />
