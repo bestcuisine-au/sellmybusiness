@@ -115,10 +115,22 @@ export async function POST(req: NextRequest) {
             .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => String.fromCharCode(parseInt(h, 16)))
             .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'");
         };
+        let profileImage: string | undefined = undefined;
+        const ogImage = getOG('og:image');
+        if (ogImage) {
+          try {
+            const imgRes = await fetch(ogImage, { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1)' }, redirect: 'follow' });
+            if (imgRes.ok) {
+              const buf = Buffer.from(await imgRes.arrayBuffer());
+              const contentType = imgRes.headers.get('content-type') || 'image/jpeg';
+              profileImage = `data:${contentType};base64,${buf.toString('base64')}`;
+            }
+          } catch (e) { /* image download failed, skip */ }
+        }
         socialProfiles[platform] = {
           name: getOG('og:title') || getOG('og:site_name') || platform,
           description: getOG('og:description') || undefined,
-          image: getOG('og:image') || undefined,
+          image: profileImage,
           followers: undefined,
         };
       } catch (e) {
