@@ -4,7 +4,6 @@ import { prisma } from '@/lib/db';
 
 export async function POST(req: NextRequest) {
   try {
-    // Auth check
     const session = await getServerSession();
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorised' }, { status: 401 });
@@ -22,6 +21,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'businessId and url required' }, { status: 400 });
     }
 
+    // Validate URL
+    try {
+      const parsedUrl = new URL(url);
+      if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+        throw new Error('Invalid protocol');
+      }
+    } catch {
+      return NextResponse.json({ error: 'Please enter a valid website URL' }, { status: 400 });
+    }
+
     // Verify business ownership
     const business = await prisma.business.findFirst({
       where: { id: businessId, userId: user.id },
@@ -30,32 +39,86 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Business not found' }, { status: 404 });
     }
 
-    // Call screenshot endpoint internally
-    const screenshotRes = await fetch(`${req.nextUrl.origin}/api/im/screenshot`, {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Cookie': req.headers.get('cookie') || ''
-      },
-      body: JSON.stringify({ url }),
-    });
+    // Inline Puppeteer screenshot capture
+    const puppeteer = require('puppeteer-core');
+    const executablePath = '/snap/bin/chromium';
     
-    const data = await screenshotRes.json();
-    if (!screenshotRes.ok) {
-      return NextResponse.json({ error: data.error || 'Failed to capture screenshots' }, { status: 500 });
+    const browser = await puppeteer.launch({
+      executablePath,
+      headless: true,
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+        '--disable-software-rasterizer',
+        '--disable-extensions'
+      ]
+    });
+
+    const page = await browser.newPage();
+    
+    // Desktop screenshot
+    await page.setViewport({ width: 1280, height: 900 });
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
+    const desktopScreenshot = await page.screenshot({ encoding: 'base64', type: 'jpeg', quality: 80 });
+    
+    // Extract social media links
+    const socialLinks = await page.evaluate(() => {
+      const links = Array.from(document.querySelectorAll('a[href]'));
+      const socials: Record<string, string> = {};
+      const patterns: Record<string, RegExp> = {
+        facebook: /facebook\.com\//i,
+        instagram: /instagram\.com\//i,
+        linkedin: /linkedin\.com\//i,
+        twitter: /twitter\.com\/|x\.com\//i,
+        youtube: /youtube\.com\//i,
+        tiktok: /tiktok\.com\//i,
+        pinterest: /pinterest\.com\//i,
+      };
+      links.forEach(link => {
+        const href = (link as HTMLAnchorElement).href;
+        for (const [platform, regex] of Object.entries(patterns)) {
+          if (regex.test(href) && !socials[platform]) {
+            socials[platform] = href;
+          }
+        }
+      });
+      return socials;
+    });
+
+    // Mobile screenshot
+    await page.setViewport({ width: 390, height: 844 });
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
+    const mobileScreenshot = await page.screenshot({ encoding: 'base64', type: 'jpeg', quality: 80 });
+
+    // Screenshot each social media profile
+    const socialScreenshots: Record<string, string> = {};
+    for (const [platform, socialUrl] of Object.entries(socialLinks)) {
+      try {
+        await page.setViewport({ width: 1280, height: 900 });
+        await page.goto(socialUrl, { waitUntil: 'networkidle2', timeout: 15000 });
+        await new Promise(r => setTimeout(r, 2000));
+        const screenshot = await page.screenshot({ encoding: 'base64', type: 'jpeg', quality: 80 });
+        socialScreenshots[platform] = screenshot;
+      } catch (e) {
+        console.error(`Failed to screenshot ${platform}:`, e);
+      }
     }
+
+    await browser.close();
 
     // Build content for the IM section
     const content = {
       websiteUrl: url,
-      desktopScreenshot: data.desktopScreenshot,
-      mobileScreenshot: data.mobileScreenshot,
-      socialLinks: data.socialLinks,
-      socialScreenshots: data.socialScreenshots,
+      desktopScreenshot,
+      mobileScreenshot,
+      socialLinks,
+      socialScreenshots,
       capturedAt: new Date().toISOString(),
     };
 
-    // Check if digital-presence section exists
+    // Upsert IMSection
     const existing = await prisma.iMSection.findFirst({
       where: { businessId, sectionType: 'digital-presence' },
     });
@@ -86,10 +149,10 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ 
       success: true, 
-      socialLinks: data.socialLinks,
-      socialCount: Object.keys(data.socialLinks || {}).length,
+      socialLinks,
+      socialCount: Object.keys(socialLinks || {}).length,
       sectionId: section.id,
-      message: `Captured digital presence with ${Object.keys(data.socialLinks || {}).length} social media ${Object.keys(data.socialLinks || {}).length === 1 ? 'profile' : 'profiles'}.`
+      message: `Captured digital presence with ${Object.keys(socialLinks || {}).length} social media ${Object.keys(socialLinks || {}).length === 1 ? 'profile' : 'profiles'}.`
     });
   } catch (error: any) {
     console.error('Digital presence error:', error);
