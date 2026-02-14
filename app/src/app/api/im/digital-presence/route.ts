@@ -99,8 +99,31 @@ export async function POST(req: NextRequest) {
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
     const mobileScreenshot = await page.screenshot({ encoding: 'base64', type: 'jpeg', quality: 80 });
 
-    // Social media profile screenshots skipped - FB/IG block headless browsers
-    const socialScreenshots: Record<string, string> = {};
+    // Fetch Open Graph metadata for social profiles (FB/IG block screenshots but serve OG tags)
+    const socialProfiles: Record<string, { name?: string; description?: string; image?: string; followers?: string }> = {};
+    for (const [platform, socialUrl] of Object.entries(socialLinks)) {
+      try {
+        const response = await fetch(socialUrl as string, {
+          headers: { 'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)' },
+          redirect: 'follow',
+        });
+        const html = await response.text();
+        const getOG = (property: string): string | undefined => {
+          const match = html.match(new RegExp(`<meta[^>]*(?:property|name)=["']${property}["'][^>]*content=["']([^"']*)["']`, 'i'))
+            || html.match(new RegExp(`<meta[^>]*content=["']([^"']*)["'][^>]*(?:property|name)=["']${property}["']`, 'i'));
+          return match?.[1];
+        };
+        socialProfiles[platform] = {
+          name: getOG('og:title') || getOG('og:site_name') || platform,
+          description: getOG('og:description') || undefined,
+          image: getOG('og:image') || undefined,
+          followers: undefined,
+        };
+      } catch (e) {
+        console.error(`Failed to fetch OG data for ${platform}:`, e);
+        socialProfiles[platform] = { name: platform };
+      }
+    }
 
     await browser.close();
 
@@ -110,7 +133,7 @@ export async function POST(req: NextRequest) {
       desktopScreenshot,
       mobileScreenshot,
       socialLinks,
-      socialScreenshots,
+      socialProfiles,
       capturedAt: new Date().toISOString(),
     };
 

@@ -6,11 +6,14 @@ import MarkdownContent from "./MarkdownContent";
 // ──── Digital Presence Types & Panel ────
 
 interface DigitalPresenceData {
-  url: string;
+  url?: string;
+  websiteUrl?: string;
   desktopScreenshot: string | null;
   mobileScreenshot: string | null;
-  socialLinks: Array<{ platform: string; url: string; screenshot: string | null }>;
+  socialLinks: Array<{ platform: string; url?: string;
+  websiteUrl?: string; screenshot: string | null }>;
   capturedAt: string;
+  socialProfiles?: Record<string, { name?: string; description?: string; image?: string; followers?: string }>;
 }
 
 // ──── Digital Presence Panel (Owner View) ────
@@ -190,27 +193,31 @@ function DigitalPresencePanel({
                   </div>
 
                   {/* Social Screenshots Grid */}
-                  {digitalPresenceData.socialLinks.some((l) => l.screenshot) && (
-                    <div>
-                      <p className="text-sm font-medium text-gray-700 mb-3">Profile Screenshots</p>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {digitalPresenceData.socialLinks
-                          .filter((l) => l.screenshot)
-                          .map((link, i) => (
-                            <div key={i} className="rounded-lg overflow-hidden shadow border border-gray-200">
-                              <div className="bg-gray-50 px-3 py-2 border-b border-gray-200">
-                                <p className="text-xs font-medium text-gray-600 capitalize">{link.platform}</p>
-                              </div>
-                              <img
-                                src={link.screenshot!.startsWith('data:') ? link.screenshot! : `data:image/jpeg;base64,${link.screenshot}`}
-                                alt={`${link.platform} profile`}
-                                className="w-full h-auto"
-                              />
-                            </div>
-                          ))}
+                              {digitalPresenceData.socialLinks.length > 0 && (
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {digitalPresenceData.socialLinks.map((link, i) => {
+                  const profile = digitalPresenceData.socialProfiles?.[link.platform];
+                  const emojis: Record<string, string> = { facebook: '📘', instagram: '📷', linkedin: '💼', youtube: '📺', twitter: '🐦', tiktok: '🎵' };
+                  return (
+                    <a key={i} href={link.url} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-4 rounded-xl border border-gray-200 hover:border-[#2e7847] hover:shadow-md transition-all bg-white">
+                      {profile?.image ? (
+                        <img src={profile.image} alt={profile.name || link.platform} className="w-12 h-12 rounded-full object-cover" />
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-xl">
+                          {emojis[link.platform] || '🌐'}
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-gray-900 truncate">{profile?.name || link.platform.charAt(0).toUpperCase() + link.platform.slice(1)}</p>
+                        {profile?.description && <p className="text-sm text-gray-500 line-clamp-2">{profile.description}</p>}
                       </div>
-                    </div>
-                  )}
+                      <span className="text-gray-400 text-sm">↗</span>
+                    </a>
+                  );
+                })}
+              </div>
+            )}
                 </>
               )}
             </div>
@@ -295,24 +302,31 @@ function DigitalPresenceBuyerView({ data }: { data: DigitalPresenceData }) {
           </div>
 
           {/* Social Screenshots Grid */}
-          {data.socialLinks.some((l) => l.screenshot) && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {data.socialLinks
-                .filter((l) => l.screenshot)
-                .map((link, i) => (
-                  <div key={i} className="rounded-lg overflow-hidden shadow border border-gray-200">
-                    <div className="bg-gray-50 px-3 py-2 border-b border-gray-200">
-                      <p className="text-xs font-medium text-gray-600 capitalize">{link.platform}</p>
-                    </div>
-                    <img
-                      src={link.screenshot!.startsWith('data:') ? link.screenshot! : `data:image/jpeg;base64,${link.screenshot}`}
-                      alt={`${link.platform} profile`}
-                      className="w-full h-auto"
-                    />
-                  </div>
-                ))}
-            </div>
-          )}
+                      {data.socialLinks.length > 0 && (
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {data.socialLinks.map((link, i) => {
+                  const profile = data.socialProfiles?.[link.platform];
+                  const emojis: Record<string, string> = { facebook: '📘', instagram: '📷', linkedin: '💼', youtube: '📺', twitter: '🐦', tiktok: '🎵' };
+                  return (
+                    <a key={i} href={link.url} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-4 rounded-xl border border-gray-200 hover:border-[#2e7847] hover:shadow-md transition-all bg-white">
+                      {profile?.image ? (
+                        <img src={profile.image} alt={profile.name || link.platform} className="w-12 h-12 rounded-full object-cover" />
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-xl">
+                          {emojis[link.platform] || '🌐'}
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-gray-900 truncate">{profile?.name || link.platform.charAt(0).toUpperCase() + link.platform.slice(1)}</p>
+                        {profile?.description && <p className="text-sm text-gray-500 line-clamp-2">{profile.description}</p>}
+                      </div>
+                      <span className="text-gray-400 text-sm">↗</span>
+                    </a>
+                  );
+                })}
+              </div>
+            )}
         </div>
       )}
     </div>
