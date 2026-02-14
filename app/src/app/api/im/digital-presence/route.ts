@@ -148,7 +148,8 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ 
-      success: true, 
+      success: true,
+      data: content,
       socialLinks,
       socialCount: Object.keys(socialLinks || {}).length,
       sectionId: section.id,

@@ -1889,7 +1889,17 @@ function SectionEditor({
     if (content) {
       try {
         const parsed = JSON.parse(content);
-        if (parsed.url && parsed.capturedAt) {
+        if ((parsed.url || parsed.websiteUrl) && parsed.capturedAt) {
+          // Transform object socialLinks to array format
+          if (parsed.socialLinks && !Array.isArray(parsed.socialLinks)) {
+            const linksObj = parsed.socialLinks;
+            const screenshotsObj = parsed.socialScreenshots || {};
+            parsed.socialLinks = Object.entries(linksObj).map(([platform, url]) => ({
+              platform,
+              url,
+              screenshot: screenshotsObj[platform] || null,
+            }));
+          }
           digitalPresenceData = parsed;
         }
       } catch {
@@ -1919,7 +1929,17 @@ function SectionEditor({
     let digitalPresenceData: DigitalPresenceData | null = null;
     try {
       const parsed = JSON.parse(content);
-      if (parsed.url && parsed.capturedAt) {
+      if ((parsed.url || parsed.websiteUrl) && parsed.capturedAt) {
+        // Transform object socialLinks to array format
+        if (parsed.socialLinks && !Array.isArray(parsed.socialLinks)) {
+          const linksObj = parsed.socialLinks;
+          const screenshotsObj = parsed.socialScreenshots || {};
+          parsed.socialLinks = Object.entries(linksObj).map(([platform, url]) => ({
+            platform,
+            url,
+            screenshot: screenshotsObj[platform] || null,
+          }));
+        }
         digitalPresenceData = parsed;
       }
     } catch {
