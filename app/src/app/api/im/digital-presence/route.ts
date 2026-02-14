@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
     const page = await browser.newPage();
     
     // Desktop screenshot
-    await page.setViewport({ width: 1440, height: 900, deviceScaleFactor: 2 });
+    await page.setViewport({ width: 1440, height: 900, deviceScaleFactor: 1.5 });
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
     // Dismiss cookie banners before capture
     await page.evaluate(() => {
@@ -68,7 +68,12 @@ export async function POST(req: NextRequest) {
       document.querySelectorAll('[class*="cookie"],[class*="consent"],[id*="cookie"]').forEach(e => (e as HTMLElement).style.display = 'none');
     });
     await new Promise(r => setTimeout(r, 1000));
-    const desktopScreenshot = await page.screenshot({ encoding: 'base64', type: 'jpeg', quality: 95, fullPage: true });
+    // Scroll down and back to trigger lazy image loading
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await new Promise(r => setTimeout(r, 2000));
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await new Promise(r => setTimeout(r, 1000));
+    const desktopScreenshot = await page.screenshot({ encoding: 'base64', type: 'jpeg', quality: 90 });
     
     // Extract social media links
     const socialLinks = await page.evaluate(() => {
@@ -95,9 +100,9 @@ export async function POST(req: NextRequest) {
     });
 
     // Mobile screenshot
-    await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 2 });
+    await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1.5 });
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
-    const mobileScreenshot = await page.screenshot({ encoding: 'base64', type: 'jpeg', quality: 95 });
+    const mobileScreenshot = await page.screenshot({ encoding: 'base64', type: 'jpeg', quality: 90 });
 
     // Fetch Open Graph metadata for social profiles (FB/IG block screenshots but serve OG tags)
     const socialProfiles: Record<string, { name?: string; description?: string; image?: string; followers?: string }> = {};
