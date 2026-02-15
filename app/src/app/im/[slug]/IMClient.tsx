@@ -10,8 +10,7 @@ interface DigitalPresenceData {
   websiteUrl?: string;
   desktopScreenshot: string | null;
   mobileScreenshot: string | null;
-  socialLinks: Array<{ platform: string; url?: string;
-  websiteUrl?: string; screenshot: string | null }>;
+  socialLinks: Array<{ platform: string; url: string; screenshot?: string | null }>;
   capturedAt: string;
   socialProfiles?: Record<string, { name?: string; description?: string; image?: string; followers?: string }>;
 }
