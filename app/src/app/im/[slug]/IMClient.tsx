@@ -2850,10 +2850,8 @@ export default function IMClient({ business, initialSections, isOwner }: IMClien
   const [aiLoading, setAiLoading] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<"saved" | "saving" | "error">("saved");
 
-  // If not owner and not verified, show gate
-  if (!isOwner && !buyerEmail) {
-    return <BuyerGate businessId={business.id} businessName={business.name} onVerified={(email, name) => { setBuyerEmail(email); setBuyerName(name); }} />;
-  }
+  // BuyerGate check - rendered conditionally below (no early return to avoid hooks violation)
+  const showBuyerGate = !isOwner && !buyerEmail;
 
   const handleSave = async (sectionType: string, content: string, title: string) => {
     setSaveStatus("saving");
@@ -2955,6 +2953,10 @@ export default function IMClient({ business, initialSections, isOwner }: IMClien
   const viewingSections = previewMode || !isOwner
     ? sections.filter((s) => s.content && s.content.trim().length > 0)
     : sections;
+
+  if (showBuyerGate) {
+    return <BuyerGate businessId={business.id} businessName={business.name} onVerified={(email, name) => { setBuyerEmail(email); setBuyerName(name); }} />;
+  }
 
   return (
     <div className="min-h-screen bg-white im-document">
