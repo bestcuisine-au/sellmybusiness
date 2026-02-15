@@ -3051,7 +3051,10 @@ export default function IMClient({ business, initialSections, isOwner }: IMClien
 
       {/* Sidebar Navigation */}
       <SidebarNav
-        sections={SECTION_DEFS.map((d) => ({ sectionType: d.type, title: d.title }))}
+        sections={(previewMode || !isOwner)
+          ? viewingSections.map((s) => ({ sectionType: s.sectionType, title: s.title || SECTION_DEFS.find((d) => d.type === s.sectionType)?.title || s.sectionType }))
+          : SECTION_DEFS.map((d) => ({ sectionType: d.type, title: d.title }))
+        }
         activeSection={activeSection}
         isOwner={isOwner}
       />
